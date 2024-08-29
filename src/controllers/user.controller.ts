@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from "express";
- import createHttpError from "http-errors";
-import UserModel from "../models/user.model";
+import createHttpError from "http-errors";
+import UserModel, { User } from "@/models/user.model";
+import { BaseController } from "./base.controller";
+import { UserService } from "@/services";
+import { Model } from "mongoose";
 
-
-class UserController {
+class UserController extends BaseController<User, typeof UserService> {
     constructor() {
-
+        super(UserService);
     }
 
     createUser = async (
@@ -15,20 +17,20 @@ class UserController {
     ) => {
         try {
             const { email, password, name } = req.body;
-    
+
             if (!email || !password) {
                 throw createHttpError.BadRequest();
             }
 
-            const isExists = await UserModel.findOne({
+            const existUser = await UserService.get({
                 email
             });
 
-            if (isExists) {
+            if (existUser) {
                 throw createHttpError.Conflict(`${email} is ready registed!`)
             }
 
-            const newUser = await UserModel.create({
+            const newUser = await UserService.create({
                 name,
                 password,
                 email,
@@ -37,8 +39,7 @@ class UserController {
             });
 
             return res.json(newUser);
-
-        } catch(error) {
+        } catch (error) {
             next(error);
         }
 
