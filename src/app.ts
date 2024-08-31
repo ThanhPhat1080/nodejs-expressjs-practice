@@ -20,7 +20,7 @@ config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-const mongodbService = new MongoDbConnection(process.env.MONGODB_STRING as string);
+const mongodbService = new MongoDbConnection(process.env.MONGO_URI as string || 'mongodb://localhost:27017/local');
 mongodbService.connect();
 
 app.use(express.json());
