@@ -1,9 +1,9 @@
 import { refinementReqQuery } from "@/utils/common";
-import { Document, FilterQuery, Model } from "mongoose";
+import { Document, FilterQuery, Model, modelNames } from "mongoose";
 
 export interface IBaseService<T> {
     getById: (id: string) => Promise<T | null>,
-    select: (criteria: FilterQuery<T>) => Promise<T[]>,
+    select: (criteria: FilterQuery<T>, isExact: boolean) => Promise<T[]>,
     create: (model: T) => Promise<T>,
     getAll: () => Promise<T[]>
 
@@ -22,10 +22,12 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         });
     }
 
-    select = async (criteria: FilterQuery<T>): Promise<T[]> => {
-        const refinementQuery = refinementReqQuery(criteria);
+    select = async (criteria: FilterQuery<T>, isExact: boolean = false): Promise<T[]> => {
+        const query = !isExact
+            ? refinementReqQuery(criteria)
+            : criteria;
 
-        return await this.model.find(refinementQuery);
+        return await this.model.find(query);
     }
 
     create = async (model: Partial<T>): Promise<T> => {
@@ -33,6 +35,16 @@ export class BaseService<T extends Document> implements IBaseService<T> {
             const createdObject = await this.model.create(model);
 
             return createdObject;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    save = async (model: T): Promise<T> => {
+        try {
+            const savedObject = await model.save();
+
+            return savedObject;
         } catch (error) {
             throw error;
         }

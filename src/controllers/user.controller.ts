@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
-import { User } from "@/models/user.model";
+import UserModel, { User } from "@/models/user.model";
 import { UserService } from "@/services";
 import { BaseController } from "./base.controller";
 
@@ -29,15 +29,15 @@ class UserController extends BaseController<User, typeof UserService> {
                 throw createHttpError.Conflict(`${email} is ready registed!`)
             }
 
-            const newUser = await UserService.create({
-                name,
-                password,
+            const newUser = new UserModel({
                 email,
-                age: 0,
-                avatar: ''
+                name,
+                password
             });
 
-            return res.json(newUser);
+            const savedUser = await UserService.save(newUser);
+
+            return res.json(savedUser);
         } catch (error) {
             next(error);
         }
@@ -62,7 +62,6 @@ class UserController extends BaseController<User, typeof UserService> {
             next(error);
         }
     }
-
 
 };
 
