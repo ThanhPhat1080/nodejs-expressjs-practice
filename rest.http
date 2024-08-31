@@ -1,1 +1,19 @@
-POST
+POST http://localhost:3010/user/register HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "email": "sample1@asn.com",
+    "password": "Abc@123"
+}
+
+###
+
+GET http://localhost:3010/user?email=a
+
+###
+GET http://localhost:3010/user
+
+###
+GET http://localhost:3010/user/66d1ea76de1798feb21fe4fc
+

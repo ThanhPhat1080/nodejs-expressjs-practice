@@ -1,5 +1,5 @@
 // Libraries
-import mongoose, {Connection} from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
 export default class MongoDbConnection {
     private connectionString: string = '';
@@ -9,27 +9,20 @@ export default class MongoDbConnection {
         this.connectionString = connectionString;
     };
 
-    connect = async () => {
-        this.connection = mongoose.createConnection(this.connectionString);
+    connect = () => {
+        const prefix = '::: Mongodb ::: :::';
+
+        mongoose.connection.on('connected', () => console.log(prefix + 'connected'));
+        mongoose.connection.on('open', () => console.log(prefix + 'open'));
+        mongoose.connection.on('disconnected', () => console.log(prefix + 'disconnected'));
+        mongoose.connection.on('reconnected', () => console.log(prefix + 'reconnected'));
+        mongoose.connection.on('disconnecting', () => console.log(prefix + 'disconnecting'));
+        mongoose.connection.on('close', () => console.log(prefix + 'close'));
+        
+        mongoose.connect(this.connectionString);
     };
 
     disconnect = async () => {
         this.connection?.close();
-    }
-
-    listenerEvents = () => {
-        const prefix = '-- Mongodb::: ';
-
-         this.connection?.on('connected', () => console.log(prefix + 'Connected'));
-         this.connection?.on('open', () => console.log(prefix + 'Open'));
-         this.connection?.on('disconnected', () => console.log(prefix + 'Disconnected'));
-         this.connection?.on('reconnected', () => console.log(prefix + 'Reconnected'));
-         this.connection?.on('disconnecting', () => console.log(prefix + 'Disconnecting'));
-         this.connection?.on('close', () => console.log(prefix + 'Close'));
-
-         process.on('SIGINT', async () => {
-            await this.connection?.close();
-            process.exit();
-         })
     }
 };
