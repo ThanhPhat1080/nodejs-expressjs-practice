@@ -1,0 +1,30 @@
+jPOST http://localhost:3010/user/register HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "email": "sample1@asn.com",
+    "password": "Abc@123"
+}
+
+###
+
+GET http://localhost:3010/user?email=a
+Authorization: Bearer <token-here>
+
+###
+GET http://localhost:3010/user
+Authorization: Bearer <token-here>
+
+###
+GET http://localhost:3010/user/66d333cab65d4a8598cb3bf3
+Authorization: Bearer <token-here>
+
+###
+POST http://localhost:3010/user/login
+Content-Type: application/json
+
+{
+    "email": "sample1@asnced.com",
+    "password": "Abc@123"
+}

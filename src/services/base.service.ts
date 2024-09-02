@@ -6,7 +6,7 @@ export interface IBaseService<T> {
     select: (criteria: FilterQuery<T>, isExact: boolean) => Promise<T[]>,
     create: (model: T) => Promise<T>,
     getAll: () => Promise<T[]>
-
+    getOne: (criteria: FilterQuery<T>) => Promise<T | null>
 }
 
 export class BaseService<T extends Document> implements IBaseService<T> {
@@ -52,6 +52,10 @@ export class BaseService<T extends Document> implements IBaseService<T> {
 
     getAll = async (): Promise<T[]> => {
         return await this.model.find({});
+    }
+
+    getOne = async (criteria: FilterQuery<T>): Promise<T | null> => {
+        return await this.model.findOne(criteria);
     }
 }
 

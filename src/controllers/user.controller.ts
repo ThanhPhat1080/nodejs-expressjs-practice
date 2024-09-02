@@ -3,7 +3,7 @@ import createHttpError from "http-errors";
 import UserModel, { User } from "@/models/user.model";
 import { UserService } from "@/services";
 import { BaseController } from "./base.controller";
-
+import { signinAccessToken, verifyAccessTokenMiddleware } from "@/helpers/jwt";
 class UserController extends BaseController<User, typeof UserService> {
     constructor() {
         super(UserService);
@@ -50,7 +50,7 @@ class UserController extends BaseController<User, typeof UserService> {
     ) => {
         try {
             let result = [];
-            
+
             if (!Object.keys(req.query).length) {
                 result = await UserService.getAll();
             } else {
@@ -63,6 +63,33 @@ class UserController extends BaseController<User, typeof UserService> {
         }
     }
 
+    login = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const { email, password } = req.body;
+
+            const user = await UserService.getOne({ email });
+            if (!user) {
+                throw createHttpError.NotFound("User not regirsted!");
+            }
+
+            const isMatchPassword = await user.checkPassword(password);
+
+            if (!isMatchPassword) {
+                throw createHttpError.BadRequest("Password is not correct!")
+            }
+
+            const accessToken = await signinAccessToken(user._id as string);
+
+            return res.json({ accessToken });
+        }
+        catch (error) {
+            next(error)
+        }
+    }
 };
 
 export default UserController;
