@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    container_name: express-app
+    ports:
+      - "3010:3010"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017/local
+    volumes:
+      - .:/usr/app
+
+volumes:
+  mongo-data:
