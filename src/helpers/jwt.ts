@@ -7,7 +7,6 @@ const signinAccessToken = async (userId: string) => {
         const payload = {
             userId,
         };
-        const secret = process.env.ACCESS_TOKEN as string;
         const options = {
             expiresIn: '1h',
         };
@@ -26,7 +25,7 @@ const signRefreshToken = async (userId: string) => {
             userId,
         };
         const options = {
-            expiresIn: '1y',
+            expiresIn: '7d',
         };
 
         JWT.sign(payload, process.env.REFRESH_TOKEN as string, options, (error, token) => {
@@ -50,8 +49,6 @@ const verifyAccessTokenMiddleware = (req: Request, res: Response, next: NextFunc
     // Verify token
     JWT.verify(token, process.env.ACCESS_TOKEN as string, (err, payload) => {
         if (err) {
-            console.log(err);
-
             return next(createHttpError.Unauthorized());
         }
         req.payload = payload;

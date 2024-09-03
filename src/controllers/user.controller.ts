@@ -59,7 +59,7 @@ class UserController extends BaseController<User, typeof UserService> {
     login = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email, password } = req.body;
-
+    
             const user = await UserService.getOne({ email });
             if (!user) {
                 throw createHttpError.NotFound('User not regirsted!');

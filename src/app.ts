@@ -1,7 +1,6 @@
 // Libraries
-import express from 'express';
+import * as express from 'express';
 import { config } from 'dotenv';
-import 'module-alias/register';
 
 import { MongoDbConnection } from './dataHelpers';
 
@@ -9,7 +8,6 @@ import CreateErrorMiddleware, { HttpError, HttpErrorConstructor } from 'http-err
 
 // Types
 import type { Express, NextFunction, Request, Response } from 'express';
-import { log } from 'console';
 
 // Routers
 import userRouter from './routers/user.router';
