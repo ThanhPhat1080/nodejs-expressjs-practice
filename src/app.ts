@@ -1,5 +1,5 @@
 // Libraries
-import * as express from 'express';
+import express from 'express';
 import { config } from 'dotenv';
 
 import { MongoDbConnection } from './dataHelpers';

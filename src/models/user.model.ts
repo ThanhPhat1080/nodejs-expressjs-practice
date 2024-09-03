@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 export interface User extends Document {
     checkPassword(password: any): Promise<boolean>;
@@ -39,8 +39,8 @@ export const UserSchema: Schema<User> = new Schema({
  */
 UserSchema.pre('save', async function (next) {
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(this.password as string, salt);
+        const salt = await bcryptjs.genSalt(10);
+        const hashPassword = await bcryptjs.hash(this.password as string, salt);
         this.password = hashPassword;
 
         next();
@@ -55,7 +55,7 @@ UserSchema.pre('save', async function (next) {
  */
 UserSchema.methods.checkPassword = async function (password: string) {
     try {
-        return await bcrypt.compare(password, this.password);
+        return await bcryptjs.compare(password, this.password);
     } catch (error) {
         console.log('CheckPassword ::: error ::: ', error);
     }

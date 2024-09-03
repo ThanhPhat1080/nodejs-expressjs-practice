@@ -18,6 +18,7 @@ services:
             MONGO_URI: mongodb://mongo:27017/local
         volumes:
             - .:/usr/app
+            - /usr/app/node_modules
 
 volumes:
     mongo-data:
