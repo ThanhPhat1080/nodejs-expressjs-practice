@@ -7,7 +7,7 @@ export default class MongoDbConnection {
 
     constructor(connectionString: string) {
         this.connectionString = connectionString;
-    };
+    }
 
     connect = () => {
         const prefix = '::: Mongodb ::: :::';
@@ -18,11 +18,11 @@ export default class MongoDbConnection {
         mongoose.connection.on('reconnected', () => console.log(prefix + 'reconnected'));
         mongoose.connection.on('disconnecting', () => console.log(prefix + 'disconnecting'));
         mongoose.connection.on('close', () => console.log(prefix + 'close'));
-        
+
         mongoose.connect(this.connectionString);
     };
 
     disconnect = async () => {
         this.connection?.close();
-    }
-};
+    };
+}

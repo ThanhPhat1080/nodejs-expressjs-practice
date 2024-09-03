@@ -1,12 +1,9 @@
-import { IBaseService } from "@/services/base.service";
-import { log } from "console";
-import { NextFunction, Response, Request } from "express";
-import createHttpError from "http-errors";
+import { IBaseService } from '@/services/base.service';
+import { log } from 'console';
+import { NextFunction, Response, Request } from 'express';
+import createHttpError from 'http-errors';
 
-export class BaseController<
-    T,
-    S extends IBaseService<T>
-> {
+export class BaseController<T, S extends IBaseService<T>> {
     private service: S;
     constructor(service: S) {
         this.service = service;
@@ -26,7 +23,7 @@ export class BaseController<
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     create = async (req: Request, res: Response, next: NextFunction): Promise<Response<T> | undefined> => {
         try {
@@ -37,7 +34,7 @@ export class BaseController<
         } catch (error) {
             next(error);
         }
-    }
+    };
 }
 
 export default BaseController;

@@ -1,12 +1,12 @@
-import { refinementReqQuery } from "@/utils/common";
-import { Document, FilterQuery, Model, modelNames } from "mongoose";
+import { refinementReqQuery } from '@/utils/common';
+import { Document, FilterQuery, Model, modelNames } from 'mongoose';
 
 export interface IBaseService<T> {
-    getById: (id: string) => Promise<T | null>,
-    select: (criteria: FilterQuery<T>, isExact: boolean) => Promise<T[]>,
-    create: (model: T) => Promise<T>,
-    getAll: () => Promise<T[]>
-    getOne: (criteria: FilterQuery<T>) => Promise<T | null>
+    getById: (id: string) => Promise<T | null>;
+    select: (criteria: FilterQuery<T>, isExact: boolean) => Promise<T[]>;
+    create: (model: T) => Promise<T>;
+    getAll: () => Promise<T[]>;
+    getOne: (criteria: FilterQuery<T>) => Promise<T | null>;
 }
 
 export class BaseService<T extends Document> implements IBaseService<T> {
@@ -18,17 +18,15 @@ export class BaseService<T extends Document> implements IBaseService<T> {
 
     getById = async (id: string): Promise<T | null> => {
         return await this.model.findOne({
-            "_id": id
+            _id: id,
         });
-    }
+    };
 
     select = async (criteria: FilterQuery<T>, isExact: boolean = false): Promise<T[]> => {
-        const query = !isExact
-            ? refinementReqQuery(criteria)
-            : criteria;
+        const query = !isExact ? refinementReqQuery(criteria) : criteria;
 
         return await this.model.find(query);
-    }
+    };
 
     create = async (model: Partial<T>): Promise<T> => {
         try {
@@ -38,7 +36,7 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         } catch (error) {
             throw error;
         }
-    }
+    };
 
     save = async (model: T): Promise<T> => {
         try {
@@ -48,15 +46,15 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         } catch (error) {
             throw error;
         }
-    }
+    };
 
     getAll = async (): Promise<T[]> => {
         return await this.model.find({});
-    }
+    };
 
     getOne = async (criteria: FilterQuery<T>): Promise<T | null> => {
         return await this.model.findOne(criteria);
-    }
+    };
 }
 
 export default BaseService;
