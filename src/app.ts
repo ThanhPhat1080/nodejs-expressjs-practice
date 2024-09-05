@@ -2,7 +2,7 @@
 import express from 'express';
 import { config } from 'dotenv';
 
-import { MongoDbConnection } from './dataHelpers';
+import { MongoDbConnection, RedisDbConnection } from './dataHelpers';
 
 import CreateErrorMiddleware, { HttpError, HttpErrorConstructor } from 'http-errors';
 
@@ -19,6 +19,9 @@ const port = process.env.PORT || 3000;
 
 const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://localhost:27017/local');
 mongodbService.connect();
+
+const redisDbService = new RedisDbConnection();
+redisDbService.connect();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,3 +47,8 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+
+process.on("SIGINT", async () => {
+    await mongodbService.disconnect();
+    // await redisDbService.disconnect();
+})

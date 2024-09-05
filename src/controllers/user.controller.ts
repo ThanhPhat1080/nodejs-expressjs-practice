@@ -3,7 +3,11 @@ import createHttpError from 'http-errors';
 import UserModel, { User } from '@/models/user.model';
 import { UserService } from '@/services';
 import { BaseController } from './base.controller';
-import { signinAccessToken, signRefreshToken } from '@/helpers/jwt';
+import {
+    signinAccessToken,
+    signRefreshToken,
+    verifyRefreshToken
+} from '@/helpers/jwt';
 
 class UserController extends BaseController<User, typeof UserService> {
     constructor() {
@@ -59,7 +63,7 @@ class UserController extends BaseController<User, typeof UserService> {
     login = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { email, password } = req.body;
-    
+
             const user = await UserService.getOne({ email });
             if (!user) {
                 throw createHttpError.NotFound('User not regirsted!');
@@ -77,6 +81,28 @@ class UserController extends BaseController<User, typeof UserService> {
             return res.json({ accessToken, refeshToken });
         } catch (error) {
             next(error);
+        }
+    };
+
+    refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { refreshToken } = req.body;
+
+            if (!refreshToken) throw createHttpError.BadRequest();
+
+            // @ts-ignore
+            const { userId } = await verifyRefreshToken(refreshToken);
+
+            const newAccessToken = await signinAccessToken(userId);
+            const newRefreshToken = await signRefreshToken(userId);
+
+            res.json({
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken
+            });
+
+        } catch (error) {
+            next(createHttpError.BadRequest());
         }
     };
 }

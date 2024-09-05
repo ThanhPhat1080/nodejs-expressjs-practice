@@ -10,7 +10,7 @@ export default class MongoDbConnection {
     }
 
     connect = () => {
-        const prefix = '::: Mongodb ::: :::';
+        const prefix = '::: Mongodb ::: ::: ';
 
         mongoose.connection.on('connected', () => console.log(prefix + 'connected'));
         mongoose.connection.on('open', () => console.log(prefix + 'open'));
@@ -23,6 +23,6 @@ export default class MongoDbConnection {
     };
 
     disconnect = async () => {
-        this.connection?.close();
+        await mongoose.disconnect();
     };
 }

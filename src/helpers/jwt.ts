@@ -4,12 +4,12 @@ import JWT from 'jsonwebtoken';
 
 const signinAccessToken = async (userId: string) => {
     return new Promise((resolve, reject) => {
-        
+
         const payload = {
             userId,
         };
         const options = {
-            expiresIn: '1h',
+            expiresIn: '10s', // 10s to testing purpose
         };
 
         JWT.sign(payload, process.env.ACCESS_TOKEN as string, options, (error, token) => {
@@ -50,11 +50,29 @@ const verifyAccessTokenMiddleware = (req: Request, res: Response, next: NextFunc
     // Verify token
     JWT.verify(token, process.env.ACCESS_TOKEN as string, (err, payload) => {
         if (err) {
-            return next(createHttpError.Unauthorized());
+            return next(createHttpError.Unauthorized(err.message));
         }
         req.payload = payload;
 
         next();
     });
 };
-export { signinAccessToken, verifyAccessTokenMiddleware, signRefreshToken };
+
+const verifyRefreshToken = async (refreshToken: string): Promise<unknown> => {
+    return new Promise((resolve, reject) => {
+        JWT.verify(refreshToken, process.env.REFRESH_TOKEN, (err, payload) => {
+            if (err) {
+                return reject(err);
+            }
+
+            resolve(payload as unknown);
+        })
+    })
+};
+
+export {
+    signinAccessToken,
+    verifyAccessTokenMiddleware,
+    signRefreshToken,
+    verifyRefreshToken
+};
