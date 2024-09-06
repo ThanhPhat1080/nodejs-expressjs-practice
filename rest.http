@@ -14,7 +14,7 @@ Authorization: Bearer <token-here>
 
 ###
 GET http://localhost:3010/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU1NTA0NTIsImV4cCI6MTcyNTU1MDQ2Mn0.Jul3zJvVICyrj9GAPITKd43DQ9KMp2w330LDriBOlxA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU2MzYwMjIsImV4cCI6MTcyNTYzNjA4Mn0.oPL7rv3q7cmNGG109v2vS8IdanizW_QAlU447MkwMh0
 
 ###
 GET http://localhost:3010/user/66d1ea76de1798feb21fe4fc
@@ -34,5 +34,13 @@ POST http://localhost:3010/user/refresh-token
 Content-Type: application/json
 
 {
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU1NTA0ODgsImV4cCI6MTcyNjE1NTI4OH0.lDWvtVdYbnb_kDRjp827Vpe6GyHsU6XzzYL8qYwRNFk"
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU2MzcwMDAsImV4cCI6MTcyNjI0MTgwMH0.NVzIzmTOpCML9uSQUIkDoXV7gH0x9AaQZVg226x0OfE"
+}
+
+###
+DELETE http://localhost:3010/user/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU2MzkwNjIsImV4cCI6MTcyNjI0Mzg2Mn0.0pISeS6Q4GzMZSpQbhTBwatuxtfGSCP1lBRV4SLMRJg"
 }

@@ -1,5 +1,5 @@
 import { UserController } from '@/controllers';
-import { verifyAccessTokenMiddleware } from '@/helpers/jwt';
+import { verifyAccessTokenFilter } from '@/helpers/jwt';
 import { Router } from 'express';
 
 const userRouter = Router();
@@ -10,16 +10,18 @@ const {
     getUsers,
     getById,
     login,
-    refreshToken
+    refreshToken,
+    logout
 } = controller;
 
 /**
  * The Router here
  */
 userRouter.post('/register', createUser);
-userRouter.get('/', verifyAccessTokenMiddleware, getUsers);
+userRouter.get('/', verifyAccessTokenFilter, getUsers);
 userRouter.get('/:id', getById);
 userRouter.post('/login', login);
 userRouter.post('/refresh-token', refreshToken);
+userRouter.delete('/logout', logout);
 
 export default userRouter;

@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
-import JWT from 'jsonwebtoken';
+import JWT, { JwtPayload } from 'jsonwebtoken';
+import { redisDbConnection } from '@/dataHelpers';
 
-const signinAccessToken = async (userId: string) => {
+const signAccessToken = async (userId: string) => {
     return new Promise((resolve, reject) => {
 
         const payload = {
             userId,
         };
         const options = {
-            expiresIn: '10s', // 10s to testing purpose
+            expiresIn: '1m', // 10s to testing purpose
         };
 
         JWT.sign(payload, process.env.ACCESS_TOKEN as string, options, (error, token) => {
@@ -29,17 +30,29 @@ const signRefreshToken = async (userId: string) => {
             expiresIn: '7d',
         };
 
-        JWT.sign(payload, process.env.REFRESH_TOKEN as string, options, (error, token) => {
+        JWT.sign(payload, process.env.REFRESH_TOKEN as string, options, async (error, token) => {
             if (error) reject(error);
 
-            resolve(token);
+            // Set token to redis
+            const expiresInSecond = 7 * 24 * 60 * 60;
+            try {
+                await redisDbConnection.client.set(
+                    userId.toString(),
+                    token, 
+                    { 'EX' : expiresInSecond }
+                );
+
+                resolve(token);
+
+            } catch {
+                reject(createHttpError.InternalServerError());
+            }
         });
     });
 };
 
-const verifyAccessTokenMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const verifyAccessTokenFilter = (req: Request, res: Response, next: NextFunction) => {
     const auth = req.headers['authorization'] as string;
-    console.log(req.headers);
 
     if (!auth) {
         return next(createHttpError.Unauthorized());
@@ -48,7 +61,7 @@ const verifyAccessTokenMiddleware = (req: Request, res: Response, next: NextFunc
     const token = auth.split(' ')[1];
 
     // Verify token
-    JWT.verify(token, process.env.ACCESS_TOKEN as string, (err, payload) => {
+    JWT.verify(token, process.env.ACCESS_TOKEN as string, (err, payload: JwtPayload) => {
         if (err) {
             return next(createHttpError.Unauthorized(err.message));
         }
@@ -58,21 +71,31 @@ const verifyAccessTokenMiddleware = (req: Request, res: Response, next: NextFunc
     });
 };
 
-const verifyRefreshToken = async (refreshToken: string): Promise<unknown> => {
+// TODO: make it become filter
+const verifyRefreshToken = async (refreshToken: string): Promise<JwtPayload> => {
     return new Promise((resolve, reject) => {
-        JWT.verify(refreshToken, process.env.REFRESH_TOKEN, (err, payload) => {
+        JWT.verify(refreshToken, process.env.REFRESH_TOKEN, async (err, payload: JwtPayload) => {
             if (err) {
                 return reject(err);
             }
 
-            resolve(payload as unknown);
+            try {
+                const reply = await redisDbConnection.client.get(payload.userId.toString());
+                if (reply === refreshToken) {
+                    return resolve(payload);
+                }
+            } catch {
+                return reject(createHttpError.InternalServerError());
+            }
+
+            return reject(createHttpError.Unauthorized());
         })
     })
 };
 
 export {
-    signinAccessToken,
-    verifyAccessTokenMiddleware,
+    signAccessToken,
+    verifyAccessTokenFilter,
     signRefreshToken,
     verifyRefreshToken
 };

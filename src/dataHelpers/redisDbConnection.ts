@@ -1,14 +1,9 @@
 // Libraries
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 
 export default class RedisDbConnection {
-    private client;
-    // private host = '';
-
-    // constructor(host: string) {
-    //     this.host = host;
-    // }
-
+    public client: RedisClientType | null = null;
+    
     connect = async () => {
         this.client = createClient();
         
@@ -26,6 +21,10 @@ export default class RedisDbConnection {
 
         this.client.on('error', err => console.log('Error', err));
         this.client.on('connect', () => console.log(prefix + '::: connected'));
+        this.client.on('reconnect', () => console.log(prefix + '::: re-connected'));
         this.client.on('ready', () => console.log(prefix + '::: ready'));
     }
 }
+
+export const redisDbConnection = new RedisDbConnection();
+redisDbConnection.connect();

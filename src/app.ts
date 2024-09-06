@@ -12,6 +12,8 @@ import type { Express, NextFunction, Request, Response } from 'express';
 // Routers
 import userRouter from './routers/user.router';
 
+import '@/dataHelpers/redisDbConnection';
+
 config();
 
 const app: Express = express();
@@ -19,9 +21,6 @@ const port = process.env.PORT || 3000;
 
 const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://localhost:27017/local');
 mongodbService.connect();
-
-const redisDbService = new RedisDbConnection();
-redisDbService.connect();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

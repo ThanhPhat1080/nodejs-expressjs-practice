@@ -4,10 +4,11 @@ import UserModel, { User } from '@/models/user.model';
 import { UserService } from '@/services';
 import { BaseController } from './base.controller';
 import {
-    signinAccessToken,
+    signAccessToken,
     signRefreshToken,
     verifyRefreshToken
 } from '@/helpers/jwt';
+import { redisDbConnection } from '@/dataHelpers';
 
 class UserController extends BaseController<User, typeof UserService> {
     constructor() {
@@ -75,7 +76,7 @@ class UserController extends BaseController<User, typeof UserService> {
                 throw createHttpError.BadRequest('Password is not correct!');
             }
 
-            const accessToken = await signinAccessToken(user._id as string);
+            const accessToken = await signAccessToken(user._id as string);
             const refeshToken = await signRefreshToken(user._id as string);
 
             return res.json({ accessToken, refeshToken });
@@ -90,10 +91,8 @@ class UserController extends BaseController<User, typeof UserService> {
 
             if (!refreshToken) throw createHttpError.BadRequest();
 
-            // @ts-ignore
             const { userId } = await verifyRefreshToken(refreshToken);
-
-            const newAccessToken = await signinAccessToken(userId);
+            const newAccessToken = await signAccessToken(userId);
             const newRefreshToken = await signRefreshToken(userId);
 
             res.json({
@@ -103,6 +102,30 @@ class UserController extends BaseController<User, typeof UserService> {
 
         } catch (error) {
             next(createHttpError.BadRequest());
+        }
+    };
+
+    logout = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { refreshToken } = req.body;
+            
+            if (!refreshToken) throw createHttpError.BadRequest();
+
+            const { userId } = await verifyRefreshToken(refreshToken);
+
+            try {
+                await redisDbConnection.client.del(userId.toString());
+
+                res.json({
+                    message: "Logout!"
+                });
+
+            } catch (err) {
+                throw createHttpError.InternalServerError(err);
+            }
+
+        } catch (error) {
+            next(error);
         }
     };
 }
