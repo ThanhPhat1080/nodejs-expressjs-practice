@@ -109,19 +109,24 @@ userRouter.post('/register', createUser);
  *      post:
  *          tags: [Users]
  *          description: Login to the application
- *          produces:
- *              - application/json
- *          parameters:
- *              - name: email
- *                description: User's email.
- *                in: formData
- *                required: true
- *                type: string
- *              - name: password
- *                description: User's password.
- *                in: formData
- *                required: true
- *                type: string
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          required:
+ *                              - email
+ *                              - password
+ *                          properties:
+ *                              email:
+ *                                  type: string
+ *                                  description: User email
+ *                              password:
+ *                                  type: string
+ *                                  description: User email
+ *                      example:
+*                           email: johndoe@mail.com
+*                           password: Abc#111
  *          responses:
  *              200:
  *                  description: Success
@@ -155,7 +160,7 @@ userRouter.post('/login', login);
  *                              type: object
  *                              $ref: '#/components/schemas/User'
  */
-userRouter.get('/:id', getById);
+userRouter.get('/:id', verifyAccessTokenFilter, getById);
 
 /**
  * @swagger
