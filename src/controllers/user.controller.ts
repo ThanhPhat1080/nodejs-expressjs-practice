@@ -108,7 +108,7 @@ class UserController extends BaseController<User, typeof UserService> {
     logout = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { refreshToken } = req.body;
-            
+
             if (!refreshToken) throw createHttpError.BadRequest();
 
             const { userId } = await verifyRefreshToken(refreshToken);

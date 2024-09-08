@@ -14,7 +14,7 @@ Authorization: Bearer <token-here>
 
 ###
 GET http://localhost:3010/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU2MzYwMjIsImV4cCI6MTcyNTYzNjA4Mn0.oPL7rv3q7cmNGG109v2vS8IdanizW_QAlU447MkwMh0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmRiZDZmMmM1YzI3Y2Y2ZWRiYzBmZDAiLCJpYXQiOjE3MjU2ODM0NzAsImV4cCI6MTcyNTY4MzUzMH0.fBTrlLi5llAhhfimS4HPzUnEpvu_n0CBiBYte-Vq8Nk
 
 ###
 GET http://localhost:3010/user/66d1ea76de1798feb21fe4fc
@@ -29,7 +29,7 @@ Content-Type: application/json
     "password": "Abc@123"
 }
 
-### 
+###
 POST http://localhost:3010/user/refresh-token
 Content-Type: application/json
 

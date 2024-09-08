@@ -10,6 +10,45 @@ export interface User extends Document {
     avatar: String;
 }
 
+/**
+ * @swagger
+ * components:
+ *      schemas:
+ *          User:
+ *              type: object
+ *              required:
+ *                  - name
+ *                  - password
+ *                  - email
+ *                  - age
+ *                  - avatar
+ *              properties:
+ *                  id:
+ *                      type: string
+ *                      description: The auto-generated id of user
+ *                  name:
+ *                      type: string
+ *                      description: User name
+ *                  password:
+ *                      type: string
+ *                      description: User password
+ *                  email:
+ *                      type: string
+ *                      description: User email
+ *                  age:
+ *                      type: number
+ *                      description: User age
+ *                  avatar:
+ *                      type: string
+ *                      description: User avatar
+ *      example:
+ *          id: d5fE_asz
+ *          name: Phat Truong
+ *          password: very-secret
+ *          email: thanhphat.994gmail.com
+ *          age: 30
+ *          avatar: https://avatar.jpeg
+ */
 export const UserSchema: Schema<User> = new Schema({
     name: {
         type: String,

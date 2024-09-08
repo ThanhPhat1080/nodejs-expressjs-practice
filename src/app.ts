@@ -1,10 +1,17 @@
 // Libraries
 import express from 'express';
-import { config } from 'dotenv';
+import { config as dotenvConfig } from 'dotenv';
 
-import { MongoDbConnection, RedisDbConnection } from './dataHelpers';
+// Swagger
+import swaggerConfig from './swagger.json';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 
-import CreateErrorMiddleware, { HttpError, HttpErrorConstructor } from 'http-errors';
+import CreateErrorMiddleware, { HttpError } from 'http-errors';
+
+// DB
+import { MongoDbConnection } from './dataHelpers';
+import '@/dataHelpers/redisDbConnection';
 
 // Types
 import type { Express, NextFunction, Request, Response } from 'express';
@@ -12,15 +19,18 @@ import type { Express, NextFunction, Request, Response } from 'express';
 // Routers
 import userRouter from './routers/user.router';
 
-import '@/dataHelpers/redisDbConnection';
-
-config();
+// Config dotenv
+dotenvConfig();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://localhost:27017/local');
+const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://0.0.0.0:27017/local');
 mongodbService.connect();
+
+// Config Swagger
+const swaggerSpec = swaggerJSDoc(swaggerConfig);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -37,7 +47,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    res.json({
+    res.status(err.status || 500).json({
         status: err.status || 500,
         message: err.message,
     });
@@ -47,7 +57,7 @@ app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });
 
-process.on("SIGINT", async () => {
+process.on('SIGINT', async () => {
     await mongodbService.disconnect();
     // await redisDbService.disconnect();
-})
+});

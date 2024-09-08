@@ -6,7 +6,14 @@ services:
             - '27017:27017'
         volumes:
             - mongo-data:/data/db
-
+    redis:
+        image: redis:6.2-alpine
+        restart: always
+        ports:
+            - '6379:6379'
+        command: redis-server --save 20 1
+        volumes:
+            - redis:/data
     app:
         build: .
         container_name: express-app
@@ -14,11 +21,14 @@ services:
             - '3010:3010'
         depends_on:
             - mongo
+            - redis
         environment:
             MONGO_URI: mongodb://mongo:27017/local
+            REDIS_URI: redis://redis:6379
         volumes:
             - .:/usr/app
             - /usr/app/node_modules
 
 volumes:
     mongo-data:
+    redis:
