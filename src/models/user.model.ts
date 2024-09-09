@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 import bcryptjs from 'bcryptjs';
 
-export interface User extends Document {
+export interface IUser extends Document {
     checkPassword(password: any): Promise<boolean>;
     name: String;
     password: String;
@@ -49,7 +49,7 @@ export interface User extends Document {
  *          age: 30
  *          avatar: https://avatar.jpeg
  */
-export const UserSchema: Schema<User> = new Schema({
+export const UserSchema: Schema<IUser> = new Schema({
     name: {
         type: String,
         required: true,
@@ -100,6 +100,6 @@ UserSchema.methods.checkPassword = async function (password: string) {
     }
 };
 
-const UserModel: Model<User> = mongoose.model('user', UserSchema);
+const UserModel: Model<IUser> = mongoose.model('user', UserSchema);
 
 export default UserModel;

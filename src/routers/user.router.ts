@@ -4,7 +4,6 @@ import { Router } from 'express';
 
 const userRouter = Router();
 
-const controller = new UserController();
 const {
     createUser,
     getUsers,
@@ -12,7 +11,7 @@ const {
     login,
     refreshToken,
     logout
-} = controller;
+} = new UserController();
 
 /**
  * @swagger

@@ -1,7 +1,7 @@
-import UserModel, { User } from '@/models/user.model';
+import UserModel, { IUser } from '@/models/user.model';
 import BaseService from './base.service';
 
-export class UserService extends BaseService<User> {
+export class UserService extends BaseService<IUser> {
     constructor() {
         super(UserModel);
     }

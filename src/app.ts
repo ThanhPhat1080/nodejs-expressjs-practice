@@ -17,7 +17,7 @@ import '@/dataHelpers/redisDbConnection';
 import type { Express, NextFunction, Request, Response } from 'express';
 
 // Routers
-import userRouter from './routers/user.router';
+import { userRouter, projectRouter } from './routers';
 
 // Config dotenv
 dotenvConfig();
@@ -41,6 +41,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // Routers
 app.use('/user', userRouter);
+app.use('/project', projectRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     next(CreateErrorMiddleware.NotFound('Not found!'));

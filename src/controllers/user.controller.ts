@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
-import UserModel, { User } from '@/models/user.model';
+import UserModel, { IUser } from '@/models/user.model';
 import { UserService } from '@/services';
 import { BaseController } from './base.controller';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@/helpers/jwt';
 import { redisDbConnection } from '@/dataHelpers';
 
-class UserController extends BaseController<User, typeof UserService> {
+class UserController extends BaseController<IUser, typeof UserService> {
     constructor() {
         super(UserService);
     }

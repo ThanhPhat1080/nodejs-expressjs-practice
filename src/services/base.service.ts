@@ -1,5 +1,5 @@
 import { refinementReqQuery } from '@/utils/common';
-import { Document, FilterQuery, Model, modelNames } from 'mongoose';
+import { Document, FilterQuery, Model, modelNames, Query } from 'mongoose';
 
 export interface IBaseService<T> {
     getById: (id: string) => Promise<T | null>;
@@ -50,6 +50,10 @@ export class BaseService<T extends Document> implements IBaseService<T> {
 
     getAll = async (): Promise<T[]> => {
         return await this.model.find({});
+    };
+
+    getAll2 = () => {
+        return this.model.find({});
     };
 
     getOne = async (criteria: FilterQuery<T>): Promise<T | null> => {
