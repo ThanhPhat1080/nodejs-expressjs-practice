@@ -47,13 +47,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
 
     getUsers = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            let result = [];
-
-            if (!Object.keys(req.query).length) {
-                result = await UserService.getAll();
-            } else {
-                result = await UserService.select(req.query);
-            }
+            const result = await UserService.getMany(req);
 
             return res.json(result);
         } catch (error) {

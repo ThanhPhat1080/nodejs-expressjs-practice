@@ -68,14 +68,18 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         return await queryBuilder.exec();
     };
 
-    getMany = async (req: Request): Promise<GetManyReturnType<T>> => {
+    getMany = async (req: Request, options?: { populate: string, field: string }): Promise<GetManyReturnType<T>> => {
         let {
             limit = 0,
             page = 0,
             skip = 0,
-            populate = '',
             ...criteria
         } = req.query;
+
+        const {
+            populate = '',
+            field = '',
+        } = options
 
         const pageNumber = Number(page);
         const limitNumber = Number(limit);
@@ -84,7 +88,7 @@ export class BaseService<T extends Document> implements IBaseService<T> {
             skip = (pageNumber - 1) * limitNumber;
         }
 
-        const options = {
+        const queryOptions = {
             skip: Number(skip),
             limit: limitNumber
         };
@@ -92,7 +96,7 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         const refinementQueries = refinementReqQuery(criteria);
         const queryBuilder = this.model
           .find(refinementQueries)
-          .setOptions(pageNumber ? options : {});
+          .setOptions(pageNumber ? queryOptions: {});
           
         (populate as string).split(',').forEach((field: string) => {
           queryBuilder.populate(field);
