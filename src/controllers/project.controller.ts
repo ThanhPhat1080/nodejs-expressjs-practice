@@ -11,21 +11,13 @@ class ProjectController extends BaseController<IProject, typeof ProjectService> 
 
     getProjects = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            let result = [];
-
-            if (!Object.keys(req.query).length) {
-                result = await ProjectService.getAll2()
-                    .populate('manager', ['name', '_id', 'email', 'age', 'avatar'])
-                    .populate('members');
-            } else {
-                result = await ProjectService.select(req.query);
-            }
+            const result = await ProjectService.getMany(req);
 
             return res.json(result);
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     createProject = async (req: Request, res: Response, next: NextFunction) => {
         try {

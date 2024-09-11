@@ -1,12 +1,19 @@
 import { refinementReqQuery } from '@/utils/common';
+import { Request } from 'express';
 import { Document, FilterQuery, Model, modelNames, Query } from 'mongoose';
+
+type GetManyReturnType<T> = {
+    data: T[],
+    total: number,
+    skip: number,
+    limit: number
+};
 
 export interface IBaseService<T> {
     getById: (id: string) => Promise<T | null>;
-    select: (criteria: FilterQuery<T>, isExact: boolean) => Promise<T[]>;
     create: (model: T) => Promise<T>;
-    getAll: () => Promise<T[]>;
-    getOne: (criteria: FilterQuery<T>) => Promise<T | null>;
+    getOne: (criteria: FilterQuery<T>, options: { populate: string, isExact: boolean }) => Promise<T | null>;
+    getMany: (req: Request) => Promise<GetManyReturnType<T>>;
 }
 
 export class BaseService<T extends Document> implements IBaseService<T> {
@@ -20,12 +27,6 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         return await this.model.findOne({
             _id: id,
         });
-    };
-
-    select = async (criteria: FilterQuery<T>, isExact: boolean = false): Promise<T[]> => {
-        const query = !isExact ? refinementReqQuery(criteria) : criteria;
-
-        return await this.model.find(query);
     };
 
     create = async (model: Partial<T>): Promise<T> => {
@@ -52,13 +53,61 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         return await this.model.find({});
     };
 
-    getAll2 = () => {
-        return this.model.find({});
+    getOne = async (criteria: FilterQuery<T>, options?: { populate: string, isExact: boolean }): Promise<T | null> => {
+        const {
+            populate = '',
+            isExact = false
+        } = options;
+
+        const queryBuilder = this.model.findOne(isExact ? criteria : refinementReqQuery(criteria));
+
+        populate.split(',').forEach(field => {
+            queryBuilder.populate(field);
+        });
+
+        return await queryBuilder.exec();
     };
 
-    getOne = async (criteria: FilterQuery<T>): Promise<T | null> => {
-        return await this.model.findOne(criteria);
-    };
+    getMany = async (req: Request): Promise<GetManyReturnType<T>> => {
+        let {
+            limit = 0,
+            page = 0,
+            skip = 0,
+            populate = '',
+            ...criteria
+        } = req.query;
+
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
+
+        if (pageNumber > 1) {
+            skip = (pageNumber - 1) * limitNumber;
+        }
+
+        const options = {
+            skip: Number(skip),
+            limit: limitNumber
+        };
+    
+        const refinementQueries = refinementReqQuery(criteria);
+        const queryBuilder = this.model
+          .find(refinementQueries)
+          .setOptions(pageNumber ? options : {});
+          
+        (populate as string).split(',').forEach((field: string) => {
+          queryBuilder.populate(field);
+        });
+    
+        const data = await queryBuilder.exec();
+
+        const total = await this.model.countDocuments(refinementQueries);
+
+        return {
+            data,
+            total,
+            ...options
+        };
+    }
 }
 
 export default BaseService;

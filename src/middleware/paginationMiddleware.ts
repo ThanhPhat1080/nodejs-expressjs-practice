@@ -3,9 +3,8 @@ import createHttpError from "http-errors";
 import { Model } from "mongoose";
 
 const paginationMiddleware = <T> (model: Model<T>) => async (req: Request, res: Response, next: NextFunction) => {
-
     const query = req.query;
-    
+
     const page = parseInt(query?.page as string || '1');
     const limit = parseInt(query?.limit as string);
     const startIndex = (page - 1) * limit;
@@ -17,7 +16,6 @@ const paginationMiddleware = <T> (model: Model<T>) => async (req: Request, res: 
       data: []
     };
     
-    // change model.length to model.countDocuments() because you are counting directly from mongodb
     if (endIndex < (await model.countDocuments().exec())) {
       result.next = {
         page: page + 1,
@@ -30,6 +28,7 @@ const paginationMiddleware = <T> (model: Model<T>) => async (req: Request, res: 
         limit: limit,
       };
     }
+
     try {
       result.data = await model.find().limit(limit).skip(startIndex);
       

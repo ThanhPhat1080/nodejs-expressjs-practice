@@ -23,7 +23,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 throw createHttpError.BadRequest();
             }
 
-            const existUsers = await UserService.select({
+            const existUsers = await UserService.getOne({
                 email,
             });
 
