@@ -5,8 +5,8 @@ export enum PROJECT_STATUSES {
     ON_TRACK = 'On Track',
     ON_HOLD = 'On Hold',
     AT_RISK = 'At Risk',
-    POTENTAL_RISK = 'Potental Risk'
-};
+    POTENTAL_RISK = 'Potental Risk',
+}
 
 export interface IProject extends Document {
     name: String;
@@ -14,12 +14,10 @@ export interface IProject extends Document {
     status: PROJECT_STATUSES;
     lastUpdate: Date;
     members: Array<IUser>;
-    startTime: Date,
-    endTime: Date,
-    budget: Number
-};
-
-
+    startTime: Date;
+    endTime: Date;
+    budget: Number;
+}
 
 /**
  * @swagger
@@ -78,21 +76,21 @@ export const ProjectSchema: Schema<IProject> = new Schema({
     name: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     manager: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'user'
+        ref: 'user',
     },
     status: {
         type: String,
         required: true,
-        default: PROJECT_STATUSES.ON_HOLD
+        default: PROJECT_STATUSES.ON_HOLD,
     },
     lastUpdate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     members: [{ type: Schema.Types.ObjectId, ref: 'user' }],
     startTime: {
@@ -105,8 +103,8 @@ export const ProjectSchema: Schema<IProject> = new Schema({
     },
     budget: {
         type: Number,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const ProjectModal: Model<IProject> = mongoose.model('project', ProjectSchema);

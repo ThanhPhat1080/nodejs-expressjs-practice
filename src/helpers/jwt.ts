@@ -5,7 +5,6 @@ import { redisDbConnection } from '@/dataHelpers';
 
 const signAccessToken = async (userId: string) => {
     return new Promise((resolve, reject) => {
-
         const payload = {
             userId,
         };
@@ -36,14 +35,9 @@ const signRefreshToken = async (userId: string) => {
             // Set token to redis
             const expiresInSecond = 7 * 24 * 60 * 60;
             try {
-                await redisDbConnection.client.set(
-                    userId.toString(),
-                    token, 
-                    { 'EX' : expiresInSecond }
-                );
+                await redisDbConnection.client.set(userId.toString(), token, { EX: expiresInSecond });
 
                 resolve(token);
-
             } catch {
                 reject(createHttpError.InternalServerError());
             }
@@ -89,13 +83,8 @@ const verifyRefreshToken = async (refreshToken: string): Promise<JwtPayload> => 
             }
 
             return reject(createHttpError.Unauthorized());
-        })
-    })
+        });
+    });
 };
 
-export {
-    signAccessToken,
-    verifyAccessTokenFilter,
-    signRefreshToken,
-    verifyRefreshToken
-};
+export { signAccessToken, verifyAccessTokenFilter, signRefreshToken, verifyRefreshToken };

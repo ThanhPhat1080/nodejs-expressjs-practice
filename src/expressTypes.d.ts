@@ -6,6 +6,6 @@ declare namespace Express {
     export interface Response {
         locals: {
             result: any;
-        }
+        };
     }
 }

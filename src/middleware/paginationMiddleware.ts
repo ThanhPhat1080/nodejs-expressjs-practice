@@ -1,43 +1,45 @@
-import type { NextFunction, Request, Response } from "express";
-import createHttpError from "http-errors";
-import { Model } from "mongoose";
+import type { NextFunction, Request, Response } from 'express';
+import createHttpError from 'http-errors';
+import { Model } from 'mongoose';
 
-const paginationMiddleware = <T> (model: Model<T>) => async (req: Request, res: Response, next: NextFunction) => {
-    const query = req.query;
+const paginationMiddleware =
+    <T>(model: Model<T>) =>
+    async (req: Request, res: Response, next: NextFunction) => {
+        const query = req.query;
 
-    const page = parseInt(query?.page as string || '1');
-    const limit = parseInt(query?.limit as string);
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+        const page = parseInt((query?.page as string) || '1');
+        const limit = parseInt(query?.limit as string);
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
 
-    let result: any = {
-      next: null,
-      previous: null,
-      data: []
+        let result: any = {
+            next: null,
+            previous: null,
+            data: [],
+        };
+
+        if (endIndex < (await model.countDocuments().exec())) {
+            result.next = {
+                page: page + 1,
+                limit: limit,
+            };
+        }
+        if (startIndex > 0) {
+            result.previous = {
+                page: page - 1,
+                limit: limit,
+            };
+        }
+
+        try {
+            result.data = await model.find().limit(limit).skip(startIndex);
+
+            res.append('result', result);
+
+            next();
+        } catch (e) {
+            next(createHttpError.BadRequest(e.message));
+        }
     };
-    
-    if (endIndex < (await model.countDocuments().exec())) {
-      result.next = {
-        page: page + 1,
-        limit: limit,
-      };
-    }
-    if (startIndex > 0) {
-      result.previous = {
-        page: page - 1,
-        limit: limit,
-      };
-    }
 
-    try {
-      result.data = await model.find().limit(limit).skip(startIndex);
-      
-      res.append('result', result);
-
-      next();
-    } catch (e) {
-      next(createHttpError.BadRequest(e.message));
-    }
-};
-
-export default paginationMiddleware
+export default paginationMiddleware;

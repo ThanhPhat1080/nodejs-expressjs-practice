@@ -11,7 +11,24 @@ class ProjectController extends BaseController<IProject, typeof ProjectService> 
 
     getProjects = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const result = await ProjectService.getMany(req);
+            const { limit, page, embed = 'false', ...criteria } = req.query;
+
+            const option = {
+                pagination: {
+                    limit: Number(limit),
+                    page: Number(page),
+                },
+                embed: (embed as string).toLowerCase() === 'true',
+                populates: [
+                    { path: 'manager', select: '-password' },
+                    {
+                        path: 'members',
+                        select: ['name', '_id', 'avatar'],
+                    },
+                ],
+            };
+
+            const result = await ProjectService.getMany(criteria, option);
 
             return res.json(result);
         } catch (error) {
@@ -21,15 +38,7 @@ class ProjectController extends BaseController<IProject, typeof ProjectService> 
 
     createProject = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const {
-                name,
-                manager,
-                status,
-                startTime,
-                endTime,
-                budget = 0,
-                members
-            } = req.body;
+            const { name, manager, status, startTime, endTime, budget = 0, members } = req.body;
 
             if (!name || !manager || !startTime || !endTime) {
                 throw createHttpError.BadRequest();
@@ -42,7 +51,7 @@ class ProjectController extends BaseController<IProject, typeof ProjectService> 
                 members,
                 startTime,
                 endTime,
-                budget
+                budget,
             });
 
             const savedProject = await ProjectService.save(newProject);

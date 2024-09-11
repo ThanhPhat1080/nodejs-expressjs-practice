@@ -2,8 +2,8 @@ POST http://localhost:3010/user/register HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample",
-    "email": "sample12@asn.com",
+    "name": "hjihji",
+    "email": "hjihji@asn.com",
     "password": "Abc@123"
 }
 
@@ -15,6 +15,12 @@ Authorization: Bearer <token-here>
 ###
 GET http://localhost:3010/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmRiZDZmMmM1YzI3Y2Y2ZWRiYzBmZDAiLCJpYXQiOjE3MjU2ODM0NzAsImV4cCI6MTcyNTY4MzUzMH0.fBTrlLi5llAhhfimS4HPzUnEpvu_n0CBiBYte-Vq8Nk
+
+###
+GET http://localhost:3010/user?limit=2&page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmRiZDZmMmM1YzI3Y2Y2ZWRiYzBmZDAiLCJpYXQiOjE3MjU2ODM0NzAsImV4cCI6MTcyNTY4MzUzMH0.fBTrlLi5llAhhfimS4HPzUnEpvu_n0CBiBYte-Vq8Nk
+
+
 
 ###
 GET http://localhost:3010/user/66d1ea76de1798feb21fe4fc
@@ -44,3 +50,7 @@ Content-Type: application/json
 {
     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQ2ZDQ3ZWM3MmY1MmIzNzk5MTQwNjIiLCJpYXQiOjE3MjU2MzkwNjIsImV4cCI6MTcyNjI0Mzg2Mn0.0pISeS6Q4GzMZSpQbhTBwatuxtfGSCP1lBRV4SLMRJg"
 }
+
+
+###
+GET http://localhost:3010/project?limit=1&page=1&embed=true

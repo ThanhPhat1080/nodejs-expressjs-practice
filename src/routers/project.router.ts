@@ -3,10 +3,7 @@ import { ProjectController } from '@/controllers';
 
 const projectRouter = Router();
 
-const {
-    getProjects,
-    createProject,
-} = new ProjectController();
+const { getProjects, createProject } = new ProjectController();
 
 /**
  * @swagger
@@ -14,8 +11,6 @@ const {
  *      name: Projects
  *      description: The Project managing API
  */
-
-
 
 /**
  * @swagger
@@ -33,7 +28,6 @@ const {
  *                              $ref: '#/components/schemas/Project'
  */
 projectRouter.get('/', getProjects);
-
 
 /**
  * @swagger

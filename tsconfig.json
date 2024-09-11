@@ -16,23 +16,15 @@
         "outDir": "./dist",
         "baseUrl": ".",
         "paths": {
-            "@/*": [
-                "./src/*"
-            ]
+            "@/*": ["./src/*"]
         },
         "plugins": [
             {
                 "transform": "typescript-transform-paths"
-            },
+            }
         ]
     },
-    "files": [
-        "./src/expressTypes.d.ts"
-    ],
-    "include": [
-        "./**/*.ts",
-    ],
-    "exclude": [
-        "**/*.test.ts"
-    ]
+    "files": ["./src/expressTypes.d.ts"],
+    "include": ["./**/*.ts"],
+    "exclude": ["**/*.test.ts"]
 }

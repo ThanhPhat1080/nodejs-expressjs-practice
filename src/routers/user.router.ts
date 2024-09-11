@@ -4,14 +4,7 @@ import { Router } from 'express';
 
 const userRouter = Router();
 
-const {
-    createUser,
-    getUsers,
-    getById,
-    login,
-    refreshToken,
-    logout
-} = new UserController();
+const { createUser, getUsers, getById, login, refreshToken, logout } = new UserController();
 
 /**
  * @swagger
@@ -19,8 +12,6 @@ const {
  *      name: Users
  *      description: The User managing API
  */
-
-
 
 /**
  * @swagger
@@ -53,8 +44,6 @@ const {
  *                      $ref: '#/components/schemas/RefreshToken'
  */
 
-
-
 /**
  * @swagger
  * /user/:
@@ -71,7 +60,7 @@ const {
  *                              items:
  *                                  $ref: '#/components/schemas/User'
  */
-userRouter.get('/', verifyAccessTokenFilter, getUsers);
+userRouter.get('/', getUsers);
 
 /**
  * @swagger
@@ -124,8 +113,8 @@ userRouter.post('/register', createUser);
  *                                  type: string
  *                                  description: User email
  *                      example:
-*                           email: johndoe@mail.com
-*                           password: Abc#111
+ *                           email: johndoe@mail.com
+ *                           password: Abc#111
  *          responses:
  *              200:
  *                  description: Success

@@ -3,11 +3,7 @@ import createHttpError from 'http-errors';
 import UserModel, { IUser } from '@/models/user.model';
 import { UserService } from '@/services';
 import { BaseController } from './base.controller';
-import {
-    signAccessToken,
-    signRefreshToken,
-    verifyRefreshToken
-} from '@/helpers/jwt';
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '@/helpers/jwt';
 import { redisDbConnection } from '@/dataHelpers';
 
 class UserController extends BaseController<IUser, typeof UserService> {
@@ -23,12 +19,10 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 throw createHttpError.BadRequest();
             }
 
-            const existUsers = await UserService.getOne({
-                email,
-            });
+            const existUser = await UserService.getOne({ email }, { isExact: true });
 
-            if (existUsers[0]) {
-                throw createHttpError.Conflict(`${email} is ready registed!`);
+            if (existUser) {
+                throw createHttpError.Conflict(`${email} is ready register!`);
             }
 
             const newUser = new UserModel({
@@ -47,7 +41,17 @@ class UserController extends BaseController<IUser, typeof UserService> {
 
     getUsers = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const result = await UserService.getMany(req);
+            const { limit, page, embed = 'false', ...criteria } = req.query;
+
+            const options = {
+                select: '-password',
+                pagination: {
+                    limit: Number(limit),
+                    page: Number(page),
+                },
+                embed: (embed as string).toLowerCase() === 'false',
+            };
+            const result = await UserService.getMany(criteria, options);
 
             return res.json(result);
         } catch (error) {
@@ -59,9 +63,9 @@ class UserController extends BaseController<IUser, typeof UserService> {
         try {
             const { email, password } = req.body;
 
-            const user = await UserService.getOne({ email });
+            const user = await UserService.getOne({ email }, { isExact: true });
             if (!user) {
-                throw createHttpError.NotFound('User not regirsted!');
+                throw createHttpError.NotFound('User not register!');
             }
 
             const isMatchPassword = await user.checkPassword(password);
@@ -71,9 +75,9 @@ class UserController extends BaseController<IUser, typeof UserService> {
             }
 
             const accessToken = await signAccessToken(user._id as string);
-            const refeshToken = await signRefreshToken(user._id as string);
+            const refreshToken = await signRefreshToken(user._id as string);
 
-            return res.json({ accessToken, refeshToken });
+            return res.json({ accessToken, refreshToken });
         } catch (error) {
             next(error);
         }
@@ -91,9 +95,8 @@ class UserController extends BaseController<IUser, typeof UserService> {
 
             res.json({
                 accessToken: newAccessToken,
-                refreshToken: newRefreshToken
+                refreshToken: newRefreshToken,
             });
-
         } catch (error) {
             next(createHttpError.BadRequest());
         }
@@ -111,13 +114,11 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 await redisDbConnection.client.del(userId.toString());
 
                 res.json({
-                    message: "Logout!"
+                    message: 'Logout!',
                 });
-
             } catch (err) {
                 throw createHttpError.InternalServerError(err);
             }
-
         } catch (error) {
             next(error);
         }
