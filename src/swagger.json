@@ -29,5 +29,5 @@
             }
         }
     },
-    "apis": ["src/routers/*.router.ts", "src/models/*.model.ts"]
+    "apis": ["src/routers/index.ts", "src/routers/*.router.ts", "src/models/*.model.ts"]
 }

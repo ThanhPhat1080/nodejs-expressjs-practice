@@ -15,41 +15,34 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
 
 /**
  * @swagger
- * components:
- *      schemas:
- *          RefreshToken:
- *              type: object
- *              required:
- *                  - refreshToken
- *              properties:
- *                  refreshToken:
- *                      type: string
- *                      description: The user's refresh token
- */
-
-/**
- * @swagger
- * components:
- *      schemas:
- *          Token:
- *              type: object
- *              required:
- *                  - accessToken
- *                  - refreshToken
- *              properties:
- *                  accessToken:
- *                      type: string
- *                      description: The user's access token
- *                  refreshToken:
- *                      $ref: '#/components/schemas/RefreshToken'
- */
-
-/**
- * @swagger
  * /user/:
  *      get:
  *          tags: [Users]
  *          description: Get a list items of User
+ *          parameters:
+ *              - in: query
+ *                name: name
+ *                schema:
+ *                    type: string
+ *                description: Query by user name
+ *              - in: query
+ *                name: email
+ *                schema:
+ *                    type: string
+ *                description: Query by user email
+ *              - in: query
+ *                name: age
+ *                schema:
+ *                    type: integer
+ *                description: Query by user age
+ *              - in: query
+ *                name: avatar
+ *                schema:
+ *                    type: string
+ *                description: Query by user avatar
+ *              - $ref: '#/components/parameters/PageParam'
+ *              - $ref: '#/components/parameters/LimitParam'
+ *              - $ref: '#/components/parameters/EmbedParam'
  *          responses:
  *              200:
  *                  description: Success

@@ -47,7 +47,7 @@ export interface IProject extends Document {
  *                      description: Project last update
  *                  status:
  *                      type: string
- *                      enum: [On Track, On Hold, At Risk, Potental Risk]
+ *                      enum: [On Track, On Hold, At Risk, Potential Risk]
  *                      description: Project status
  *                  members:
  *                      type: [object]
