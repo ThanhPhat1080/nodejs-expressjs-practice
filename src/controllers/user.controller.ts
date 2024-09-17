@@ -29,7 +29,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 email,
                 name,
                 password,
-                role: USER_ROLES.USER
+                role: USER_ROLES.USER,
             });
 
             const savedUser = await UserService.save(newUser);

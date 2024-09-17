@@ -8,7 +8,7 @@ const signAccessToken = async (userId: string, role: USER_ROLES) => {
     return new Promise((resolve, reject) => {
         const payload = {
             sub: userId,
-            role
+            role,
         };
         const options = {
             expiresIn: '1m', // 1m to testing purpose
@@ -26,7 +26,7 @@ const signRefreshToken = async (userId: string, role: USER_ROLES) => {
     return new Promise((resolve, reject) => {
         const payload = {
             sub: userId,
-            role
+            role,
         };
         const options = {
             expiresIn: '7d',

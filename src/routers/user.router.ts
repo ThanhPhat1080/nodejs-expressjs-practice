@@ -54,7 +54,7 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
  *                              items:
  *                                  $ref: '#/components/schemas/User'
  */
-userRouter.get('/', verifyAccessTokenFilter, withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]),getUsers);
+userRouter.get('/', verifyAccessTokenFilter, withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]), getUsers);
 
 /**
  * @swagger
