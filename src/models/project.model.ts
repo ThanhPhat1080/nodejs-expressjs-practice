@@ -5,18 +5,18 @@ export enum PROJECT_STATUSES {
     ON_TRACK = 'On Track',
     ON_HOLD = 'On Hold',
     AT_RISK = 'At Risk',
-    POTENTAL_RISK = 'Potental Risk',
+    POTENTIAL_RISK = 'Potential Risk',
 }
 
 export interface IProject extends Document {
-    name: String;
+    name: string;
     manager: IUser;
     status: PROJECT_STATUSES;
     lastUpdate: Date;
     members: Array<IUser>;
     startTime: Date;
     endTime: Date;
-    budget: Number;
+    budget: number;
 }
 
 /**
@@ -87,6 +87,7 @@ export const ProjectSchema: Schema<IProject> = new Schema({
         type: String,
         required: true,
         default: PROJECT_STATUSES.ON_HOLD,
+        enum: PROJECT_STATUSES,
     },
     lastUpdate: {
         type: Date,

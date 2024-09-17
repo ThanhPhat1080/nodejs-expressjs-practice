@@ -1,5 +1,6 @@
 import { UserController } from '@/controllers';
-import { verifyAccessTokenFilter } from '@/helpers/jwt';
+import { verifyAccessTokenFilter, withRoles } from '@/middleware/auth';
+import { USER_ROLES } from '@/models/user.model';
 import { Router } from 'express';
 
 const userRouter = Router();
@@ -53,7 +54,7 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
  *                              items:
  *                                  $ref: '#/components/schemas/User'
  */
-userRouter.get('/', getUsers);
+userRouter.get('/', verifyAccessTokenFilter, withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]),getUsers);
 
 /**
  * @swagger
@@ -141,7 +142,7 @@ userRouter.post('/login', login);
  *                              type: object
  *                              $ref: '#/components/schemas/User'
  */
-userRouter.get('/:id', verifyAccessTokenFilter, getById);
+userRouter.get('/:id', getById);
 
 /**
  * @swagger

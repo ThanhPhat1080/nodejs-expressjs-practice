@@ -1,6 +1,10 @@
+import { JwtPayload } from "jsonwebtoken";
+import { IUser } from "./models/user.model";
+
 declare namespace Express {
     export interface Request {
-        payload: any;
+        payload?: JwtPayload;
+        user?: Partial<IUser>
     }
 
     export interface Response {

@@ -1,13 +1,23 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 import bcryptjs from 'bcryptjs';
 
+export enum USER_ROLES {
+    USER = 'User',
+    ADMIN = 'Admin',
+    SUPER_USER = 'SuperUser',
+    STAFF = 'Staff',
+}
+
 export interface IUser extends Document {
+    // Extends method for user-model
     checkPassword(password: any): Promise<boolean>;
-    name: String;
-    password: String;
-    email: String;
-    age: Number;
-    avatar: String;
+
+    role: string;
+    name: string;
+    password: string;
+    email: string;
+    age: number;
+    avatar: string;
 }
 
 /**
@@ -41,6 +51,10 @@ export interface IUser extends Document {
  *                  avatar:
  *                      type: string
  *                      description: User avatar
+ *                  role:
+ *                      type: string
+ *                      description: User role
+ *                      enum: [User, Staff, Admin, SuperUser]
  *      example:
  *          id: d5fE_asz
  *          name: Phat Truong
@@ -48,6 +62,7 @@ export interface IUser extends Document {
  *          email: thanhphat.994gmail.com
  *          age: 30
  *          avatar: https://avatar.jpeg
+ *          role: Admin
  */
 export const UserSchema: Schema<IUser> = new Schema({
     name: {
@@ -69,6 +84,11 @@ export const UserSchema: Schema<IUser> = new Schema({
     },
     avatar: {
         type: String,
+    },
+    role: {
+        type: String,
+        required: true,
+        enum: USER_ROLES,
     },
 });
 

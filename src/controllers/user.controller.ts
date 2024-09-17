@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
-import UserModel, { IUser } from '@/models/user.model';
+import UserModel, { IUser, USER_ROLES } from '@/models/user.model';
 import { UserService } from '@/services';
 import { BaseController } from './base.controller';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '@/helpers/jwt';
@@ -29,6 +29,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 email,
                 name,
                 password,
+                role: USER_ROLES.USER
             });
 
             const savedUser = await UserService.save(newUser);
