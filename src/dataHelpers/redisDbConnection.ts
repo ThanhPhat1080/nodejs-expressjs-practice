@@ -29,4 +29,3 @@ export default class RedisDbConnection {
 }
 
 export const redisDbConnection = new RedisDbConnection();
-redisDbConnection.connect();

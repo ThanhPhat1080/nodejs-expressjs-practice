@@ -1,5 +1,5 @@
 import { UserController } from '@/controllers';
-import { verifyAccessTokenFilter, withRoles } from '@/middleware/auth';
+import { verifyAccessTokenAuthentication, withRoles } from '@/middleware/auth';
 import { USER_ROLES } from '@/models/user.model';
 import { Router } from 'express';
 
@@ -54,7 +54,7 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
  *                              items:
  *                                  $ref: '#/components/schemas/User'
  */
-userRouter.get('/', verifyAccessTokenFilter, withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]), getUsers);
+userRouter.get('/', verifyAccessTokenAuthentication, withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]), getUsers);
 
 /**
  * @swagger

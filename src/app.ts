@@ -10,7 +10,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import CreateErrorMiddleware, { HttpError } from 'http-errors';
 
 // DB
-import { MongoDbConnection } from './dataHelpers';
+import { MongoDbConnection, redisDbConnection } from './dataHelpers';
 import '@/dataHelpers/redisDbConnection';
 
 // Types
@@ -27,6 +27,8 @@ const port = process.env.PORT || 3000;
 
 const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://0.0.0.0:27017/local');
 mongodbService.connect();
+
+redisDbConnection.connect();
 
 // Config Swagger
 const swaggerSpec = swaggerJSDoc(swaggerConfig);

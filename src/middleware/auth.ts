@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import JWT, { JwtPayload } from 'jsonwebtoken';
 
-const verifyAccessTokenFilter = (req: Request, res: Response, next: NextFunction) => {
+const verifyAccessTokenAuthentication = (req: Request, res: Response, next: NextFunction) => {
     const auth = req.headers['authorization'] as string;
 
     if (!auth) {
@@ -47,4 +47,4 @@ const withRoles = (roles: string[]) => (req: Request, res: Response, next: NextF
     return next(createHttpError.Unauthorized());
 };
 
-export { withRoles, verifyAccessTokenFilter };
+export { withRoles, verifyAccessTokenAuthentication };
