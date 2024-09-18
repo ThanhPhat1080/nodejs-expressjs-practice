@@ -100,7 +100,7 @@ export const UserSchema: Schema<IUser> = new Schema({
     },
     updatedAt: {
         type: Date,
-    }
+    },
 });
 
 /**
