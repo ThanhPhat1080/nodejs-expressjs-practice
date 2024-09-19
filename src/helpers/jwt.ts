@@ -4,7 +4,7 @@ import JWT, { JwtPayload } from 'jsonwebtoken';
 import { redisDbConnection } from '@/dataHelpers';
 import { USER_ROLES } from '@/models/user.model';
 
-const signAccessToken = async (userId: string, role: USER_ROLES) => {
+const signAccessToken = async (userId: string, role: string | USER_ROLES) => {
     return new Promise((resolve, reject) => {
         const payload = {
             sub: userId,
@@ -22,7 +22,7 @@ const signAccessToken = async (userId: string, role: USER_ROLES) => {
     });
 };
 
-const signRefreshToken = async (userId: string, role: USER_ROLES) => {
+const signRefreshToken = async (userId: string, role: string | USER_ROLES) => {
     return new Promise((resolve, reject) => {
         const payload = {
             sub: userId,

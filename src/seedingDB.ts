@@ -70,6 +70,8 @@ const seedingUser = () => {
             })
             .catch((err) => {
                 console.log('Seed user error', err);
+            }).then(() => {
+                process.exit();
             });
     } catch (err) {
         console.log(err.stack);
