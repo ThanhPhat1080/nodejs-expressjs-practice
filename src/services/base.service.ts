@@ -103,7 +103,6 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         const queryBuilder = this.model.find(refinementQueries).setOptions(page ? queryOptions : {});
 
         if (embed) {
-            console.log('ruin');
             populates.forEach((populate) => {
                 queryBuilder.populate(populate);
             });

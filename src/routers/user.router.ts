@@ -9,17 +9,12 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
 
 /**
  * @swagger
- * tags:
- *      name: Users
- *      description: The User managing API
- */
-
-/**
- * @swagger
  * /user/:
  *      get:
  *          tags: [Users]
  *          description: Get a list items of User
+ *          security:
+ *              - BearerAuth: []
  *          parameters:
  *              - in: query
  *                name: name
@@ -45,6 +40,8 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
  *              - $ref: '#/components/parameters/LimitParam'
  *              - $ref: '#/components/parameters/EmbedParam'
  *          responses:
+ *              401:
+ *                  $ref: '#/components/responses/UnauthorizedError'
  *              200:
  *                  description: Success
  *                  content:
@@ -68,12 +65,11 @@ userRouter.get('/', verifyAccessTokenAuthentication, withRoles([USER_ROLES.ADMIN
  *                      schema:
  *                          $ref: '#/components/schemas/User'
  *                      example:
- *                          value:
- *                              name: John Doe
- *                              password: Abc#111
- *                              email: johndoe@mail.com
- *                              age: 20
- *                              avatar: https://avatar.com/abc.jpg
+ *                          name: John Doe
+ *                          password: Abc#111
+ *                          email: johndoe@mail.com
+ *                          age: 20
+ *                          avatar: https://avatar.com/abc.jpg
  *          responses:
  *              200:
  *                  description: Success
@@ -126,6 +122,8 @@ userRouter.post('/login', login);
  *      get:
  *          tags: [Users]
  *          description: Get a user by user Id
+ *          security:
+ *              - BearerAuth: []
  *          parameters:
  *              - in: path
  *                name: id
@@ -134,6 +132,8 @@ userRouter.post('/login', login);
  *                  type: string
  *                description: The user ID
  *          responses:
+ *              401:
+ *                  $ref: '#/components/responses/UnauthorizedError'
  *              200:
  *                  description: Success
  *                  content:
@@ -142,7 +142,7 @@ userRouter.post('/login', login);
  *                              type: object
  *                              $ref: '#/components/schemas/User'
  */
-userRouter.get('/:id', getById);
+userRouter.get('/:id', verifyAccessTokenAuthentication, withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]), getById);
 
 /**
  * @swagger

@@ -1,6 +1,5 @@
 import { JwtPayload } from 'jsonwebtoken';
 import { IUser } from './models/user.model';
-
 declare namespace Express {
     export interface Request {
         payload?: JwtPayload;

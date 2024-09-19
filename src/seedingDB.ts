@@ -42,7 +42,7 @@ const seedingUser = () => {
                         : USER_ROLES.STAFF;
             const password = generatePassword(role);
 
-            const salt = bcryptjs.genSaltSync(process.env.GEN_SALT as unknown as number);
+            const salt = bcryptjs.genSaltSync(Number(process.env.GEN_SALT as string));
             const hashPassword = bcryptjs.hashSync(password as string, salt);
 
             const currentTimestamp = new Date().getTime();
@@ -62,7 +62,6 @@ const seedingUser = () => {
 
             return acc;
         }, []);
-        console.log('newUser', JSON.stringify(newUsers));
 
         UserModel.insertMany(newUsers)
             .then(() => {
@@ -70,7 +69,8 @@ const seedingUser = () => {
             })
             .catch((err) => {
                 console.log('Seed user error', err);
-            }).then(() => {
+            })
+            .then(() => {
                 process.exit();
             });
     } catch (err) {

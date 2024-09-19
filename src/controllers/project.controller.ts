@@ -28,6 +28,9 @@ class ProjectController extends BaseController<IProject, typeof ProjectService> 
                 ],
             };
 
+            if (criteria.manager || criteria.members) {
+            }
+
             const result = await ProjectService.getMany(criteria, option);
 
             return res.json(result);

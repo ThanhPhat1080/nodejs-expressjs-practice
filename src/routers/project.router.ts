@@ -1,23 +1,20 @@
 import { Router } from 'express';
 import { ProjectController } from '@/controllers';
+import { verifyAccessTokenAuthentication, withRoles } from '@/middleware/auth';
+import { USER_ROLES } from '@/models/user.model';
 
 const projectRouter = Router();
 
 const { getProjects, createProject } = new ProjectController();
 
-/**
- * @swagger
- * tags:
- *      name: Projects
- *      description: The Project managing API
- */
-
-/** # TODO: query by manager name
+/** #
  * @swagger
  * /project/:
  *      get:
  *          tags: [Projects]
  *          description: Get a list items of project
+ *          security:
+ *              - BearerAuth: []
  *          parameters:
  *              - in: query
  *                name: name
@@ -49,6 +46,8 @@ const { getProjects, createProject } = new ProjectController();
  *              - $ref: '#/components/parameters/LimitParam'
  *              - $ref: '#/components/parameters/EmbedParam'
  *          responses:
+ *              401:
+ *                  $ref: '#/components/responses/UnauthorizedError'
  *              200:
  *                  description: Success
  *                  content:
@@ -57,7 +56,7 @@ const { getProjects, createProject } = new ProjectController();
  *                              type: object
  *                              $ref: '#/components/schemas/Project'
  */
-projectRouter.get('/', getProjects);
+projectRouter.get('/', verifyAccessTokenAuthentication, getProjects);
 
 /**
  * @swagger
@@ -65,6 +64,8 @@ projectRouter.get('/', getProjects);
  *      post:
  *          tags: [Projects]
  *          description: Create new project
+ *          security:
+ *              - BearerAuth: [Admin]
  *          requestBody:
  *              content:
  *                  application/json:
@@ -80,6 +81,8 @@ projectRouter.get('/', getProjects);
  *                          endTime: Mon Sep 01 2025 00:00:00
  *                          budget: 500000
  *          responses:
+ *              401:
+ *                  $ref: '#/components/responses/UnauthorizedError'
  *              200:
  *                  description: Success
  *                  content:
@@ -88,6 +91,11 @@ projectRouter.get('/', getProjects);
  *                              type: object
  *                              $ref: '#/components/schemas/Project'
  */
-projectRouter.post('/', createProject);
+projectRouter.post(
+    '/',
+    verifyAccessTokenAuthentication,
+    withRoles([USER_ROLES.ADMIN, USER_ROLES.SUPER_USER]),
+    createProject,
+);
 
 export default projectRouter;

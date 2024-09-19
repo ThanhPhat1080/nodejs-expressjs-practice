@@ -18,90 +18,38 @@ export interface IUser extends Document {
     age: number;
     avatar: string;
     role: string;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
-/**
- * @swagger
- * components:
- *      schemas:
- *          User:
- *              type: object
- *              required:
- *                  - name
- *                  - password
- *                  - email
- *                  - age
- *                  - avatar
- *              properties:
- *                  id:
- *                      type: string
- *                      description: The auto-generated id of user
- *                  name:
- *                      type: string
- *                      description: User name
- *                  password:
- *                      type: string
- *                      description: User password
- *                  email:
- *                      type: string
- *                      description: User email
- *                  age:
- *                      type: number
- *                      description: User age
- *                  avatar:
- *                      type: string
- *                      description: User avatar
- *                  role:
- *                      type: string
- *                      description: User role
- *                      enum: [User, Staff, Admin, SuperUser]
- *      example:
- *          id: d5fE_asz
- *          name: Phat Truong
- *          password: very-secret
- *          email: thanhphat.994gmail.com
- *          age: 30
- *          avatar: https://avatar.jpeg
- *          role: Admin
- *          createdAt: Wed Sep 10 2024 22:30:30
- *          updatedAt: Wed Sep 18 2024 23:00:00
- */
-export const UserSchema: Schema<IUser> = new Schema({
-    name: {
-        type: String,
-        required: true,
+export const UserSchema: Schema<IUser> = new Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        password: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+        },
+        age: {
+            type: Number,
+        },
+        avatar: {
+            type: String,
+        },
+        role: {
+            type: String,
+            required: true,
+            enum: USER_ROLES,
+        },
     },
-    password: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-    },
-    age: {
-        type: Number,
-    },
-    avatar: {
-        type: String,
-    },
-    role: {
-        type: String,
-        required: true,
-        enum: USER_ROLES,
-    },
-    createdAt: {
-        type: Date,
-        required: true,
-    },
-    updatedAt: {
-        type: Date,
-    },
-});
+    { timestamps: true },
+);
 
 /**
  * Mongo model pre middleware
@@ -109,14 +57,10 @@ export const UserSchema: Schema<IUser> = new Schema({
  */
 UserSchema.pre('save', async function (next) {
     try {
-        const currentTime = new Date();
-
-        const salt = await bcryptjs.genSalt(process.env.GEN_SALT as unknown as number);
+        const salt = await bcryptjs.genSalt(Number(process.env.GEN_SALT as string));
         const hashPassword = await bcryptjs.hash(this.password as string, salt);
 
         this.password = hashPassword;
-        this.createdAt = currentTime;
-        this.updatedAt = currentTime;
 
         next();
     } catch (error) {
