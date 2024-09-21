@@ -4,6 +4,11 @@ import mongoose from 'mongoose';
 import UserModel, { USER_ROLES } from './models/user.model';
 import bcryptjs from 'bcryptjs';
 
+import { config as dotenvConfig } from 'dotenv';
+
+// Config dotenv
+dotenvConfig();
+
 async function seedDB() {
     const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://0.0.0.0:27017/local');
     mongodbService.connect();

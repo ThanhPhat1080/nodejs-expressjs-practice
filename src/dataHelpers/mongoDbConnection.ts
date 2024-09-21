@@ -3,7 +3,6 @@ import mongoose, { Connection } from 'mongoose';
 
 export default class MongoDbConnection {
     private connectionString: string = '';
-    private connection: Connection | undefined;
 
     constructor(connectionString: string) {
         this.connectionString = connectionString;
@@ -19,7 +18,10 @@ export default class MongoDbConnection {
         mongoose.connection.on('disconnecting', () => console.log(prefix + 'disconnecting'));
         mongoose.connection.on('close', () => console.log(prefix + 'close'));
 
-        mongoose.connect(this.connectionString);
+
+        const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+        // @ts-ignore
+        mongoose.connect(this.connectionString, clientOptions);
     };
 
     disconnect = async () => {
