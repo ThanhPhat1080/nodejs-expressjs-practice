@@ -17,6 +17,9 @@
         "servers": [
             {
                 "url": "http://localhost:3010/"
+            },
+            {
+                "url": "https://expressjs-mongodb-redis-practice.onrender.com/"
             }
         ],
         "components": {
