@@ -18,7 +18,6 @@ export default class MongoDbConnection {
         mongoose.connection.on('disconnecting', () => console.log(prefix + 'disconnecting'));
         mongoose.connection.on('close', () => console.log(prefix + 'close'));
 
-
         const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
         // @ts-ignore
         mongoose.connect(this.connectionString, clientOptions);

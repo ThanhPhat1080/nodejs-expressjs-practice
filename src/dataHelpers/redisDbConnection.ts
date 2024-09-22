@@ -9,8 +9,8 @@ export default class RedisDbConnection {
             password: process.env.REDIS_PASSWORD || '',
             socket: {
                 host: process.env.REDIS_URI || 'redis://redis',
-                port: Number(process.env.REDIS_PORT) || 6379
-            }
+                port: Number(process.env.REDIS_PORT) || 6379,
+            },
         });
 
         this.listener();
