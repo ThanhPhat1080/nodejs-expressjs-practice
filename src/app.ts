@@ -1,5 +1,5 @@
 // Libraries
-import express from 'express';
+import express, { Router } from 'express';
 import { config as dotenvConfig } from 'dotenv';
 
 // Swagger
@@ -42,8 +42,11 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Routers
-app.use('/user', userRouter);
-app.use('/project', projectRouter);
+const appRouters = Router();
+appRouters.use('/user', userRouter);
+appRouters.use('/project', projectRouter);
+
+app.use('/api', appRouters);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     next(CreateErrorMiddleware.NotFound('Not found!'));
