@@ -25,6 +25,8 @@ dotenvConfig();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+console.log("=== process.env.NODE_ENV ===", process.env.NODE_ENV)
+
 const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://0.0.0.0:27017/local');
 mongodbService.connect();
 
