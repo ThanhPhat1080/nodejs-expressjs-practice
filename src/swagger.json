@@ -16,7 +16,7 @@
         },
         "servers": [
             {
-                "url": "/api"
+                "url": "/api/v1"
             }
         ],
         "components": {
