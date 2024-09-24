@@ -2,33 +2,25 @@
 import { createClient, RedisClientType } from 'redis';
 import { config as dotenvConfig } from 'dotenv';
 
+// Configs
+import databaseConfigs from '@/configs/databaseConfigs';
+
 // Config dotenv
 dotenvConfig();
 
-export default class RedisDbConnection {
+export default class RedisDBConnection {
     public client: RedisClientType | null = null;
+    private connectionConfig: any = '';
+
+    constructor(connectionConfig: any) {
+        this.connectionConfig = connectionConfig;
+    }
 
     connect = async () => {
-        const redisClient = process.env.NODE_ENV === 'development'
-            ? {
-                url: process.env.REDIS_URI as string,
-            }
-            : {
-                password: process.env.REDIS_PASSWORD || '',
-                socket: {
-                host: process.env.REDIS_URI,
-                port: Number(process.env.REDIS_PORT),
-            }
-        }
-
-        this.client = createClient(redisClient);
+        this.client = createClient(this.connectionConfig);
         this.listener();
 
         await this.client.connect();
-    };
-
-    disconnect = async () => {
-        await this.client.disconnect();
     };
 
     private listener = () => {
@@ -38,7 +30,10 @@ export default class RedisDbConnection {
         this.client.on('connect', () => console.log(prefix + '::: connected'));
         this.client.on('reconnect', () => console.log(prefix + '::: re-connected'));
         this.client.on('ready', () => console.log(prefix + '::: ready'));
+        this.client.on('disconnect', () => console.log(prefix + '::: disconnect'));
     };
 }
 
-export const redisDbConnection = new RedisDbConnection();
+export const redisDBConnection = new RedisDBConnection(
+    process.env.NODE_ENV === 'development' ? databaseConfigs.redis.local : databaseConfigs.redis.server,
+);

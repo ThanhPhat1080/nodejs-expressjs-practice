@@ -1,6 +1,9 @@
 // Libraries
 import mongoose, { Connection } from 'mongoose';
 
+// Configs
+import databaseConfigs from '@/configs/databaseConfigs';
+
 export default class MongoDbConnection {
     private connectionString: string = '';
 
@@ -27,3 +30,5 @@ export default class MongoDbConnection {
         await mongoose.disconnect();
     };
 }
+
+export const mongoDBConnection = new MongoDbConnection(databaseConfigs.mongoDB.connectionString);

@@ -4,7 +4,7 @@ import UserModel, { IUser, USER_ROLES } from '@/models/user.model';
 import { UserService } from '@/services';
 import { BaseController } from './base.controller';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '@/helpers/jwt';
-import { redisDbConnection } from '@/dataHelpers';
+import { redisDBConnection } from '@/dataHelpers';
 
 class UserController extends BaseController<IUser, typeof UserService> {
     constructor() {
@@ -112,7 +112,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
             const { userId } = await verifyRefreshToken(refreshToken);
 
             try {
-                await redisDbConnection.client.del(userId.toString());
+                await redisDBConnection.client.del(userId.toString());
 
                 res.json({
                     message: 'Logout!',

@@ -1,2 +1,2 @@
-export { default as MongoDbConnection } from './mongoDbConnection';
-export { default as RedisDbConnection, redisDbConnection } from './redisDbConnection';
+export { default as MongoDbConnection, mongoDBConnection } from './mongoDbConnection';
+export { default as RedisDbConnection, redisDBConnection } from './redisDbConnection';

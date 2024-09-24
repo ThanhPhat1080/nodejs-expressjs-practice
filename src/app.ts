@@ -1,26 +1,21 @@
 // Libraries
-import express, { Router } from 'express';
+import express from 'express';
 import { config as dotenvConfig } from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-// Swagger
-import swaggerConfig from './swagger.json';
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
-
-import CreateErrorMiddleware, { HttpError } from 'http-errors';
-
 // DB
-import { MongoDbConnection, redisDbConnection } from './dataHelpers';
-import '@/dataHelpers/redisDbConnection';
+import { mongoDBConnection, redisDBConnection } from '@/dataHelpers';
 
 // Types
-import type { Express, NextFunction, Request, Response } from 'express';
+import type { Express, Request, Response } from 'express';
 
 // Routers
-import { userRouter, projectRouter } from './routers';
-import logEvents from './helpers/log';
+import appRouters from './routers';
+
+// Helpers
+import { notFoundMiddleware, globalErrorMiddleware } from './middleware/globalError.middleware';
+import { configSwaggerUI } from './configs/swaggerConfigs';
 
 // Config dotenv
 dotenvConfig();
@@ -28,56 +23,33 @@ dotenvConfig();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+// Connect Databases
+mongoDBConnection.connect();
+redisDBConnection.connect();
 
-const mongodbService = new MongoDbConnection((process.env.MONGO_URI as string) || 'mongodb://0.0.0.0:27017/local');
-mongodbService.connect();
-
-redisDbConnection.connect();
-
-// Config Swagger
-const swaggerSpec = swaggerJSDoc(swaggerConfig);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-
+// Config middlewares
+configSwaggerUI(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet()); // Hidden metadata on header
+app.use(morgan('common')); // For debug logger
 
-// Hidden metadata on header
-app.use(helmet());
-
-// For debug logger
-app.use(morgan('common'));
-
+// Routers
 app.get('/', (req: Request, res: Response) => {
     res.send('Express + TypeScript Server');
 });
-
-// Routers
-const appRouters = Router();
-appRouters.use('/user', userRouter);
-appRouters.use('/project', projectRouter);
-
 app.use('/api/v1', appRouters);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-    next(CreateErrorMiddleware.NotFound('Not found!'));
-});
-
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    logEvents(`[path: ${req.url} | method: ${req.method}]\tError --- Status: ${err.status} - ${err.message}`);
-
-    res.status(err.status || 500).json({
-        status: err.status || 500,
-        message: err.message,
-    });
-});
-
+// Config global-error catching
+app.use(notFoundMiddleware);
+app.use(globalErrorMiddleware);
 
 app.listen(port, () => {
-    console.log("[server]: Server is running on NODE_ENV =", process.env.NODE_ENV);
+    console.log('[server]: Server is running on NODE_ENV =', process.env.NODE_ENV);
     console.log(`[server]: Server is running at PORT: ${port}`);
 });
 
-process.on('SIGINT', async () => {
-    await mongodbService.disconnect();
-    // await redisDbService.disconnect();
+process.on('SIGINT', () => {
+    mongoDBConnection.disconnect();
+    redisDBConnection.client.quit();
 });

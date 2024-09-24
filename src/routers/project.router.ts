@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ProjectController } from '@/controllers';
-import { verifyAccessTokenAuthentication, withRoles } from '@/middleware/auth';
+import { verifyAccessTokenAuthentication, withRoles } from '@/middleware/auth.middleware';
 import { USER_ROLES } from '@/models/user.model';
 
 const projectRouter = Router();

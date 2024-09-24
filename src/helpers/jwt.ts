@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import JWT, { JwtPayload } from 'jsonwebtoken';
-import { redisDbConnection } from '@/dataHelpers';
+import { redisDBConnection } from '@/dataHelpers';
 import { USER_ROLES } from '@/models/user.model';
 
 const signAccessToken = async (userId: string, role: string | USER_ROLES) => {
@@ -38,7 +38,7 @@ const signRefreshToken = async (userId: string, role: string | USER_ROLES) => {
             // Set token to redisDB
             const expiresInSecond = 7 * 24 * 60 * 60;
             try {
-                await redisDbConnection.client.set(userId.toString(), token, { EX: expiresInSecond });
+                await redisDBConnection.client.set(userId.toString(), token, { EX: expiresInSecond });
 
                 resolve(token);
             } catch {
@@ -57,7 +57,7 @@ const verifyRefreshToken = async (refreshToken: string): Promise<JwtPayload> => 
             }
 
             try {
-                const reply = await redisDbConnection.client.get(payload.userId.toString());
+                const reply = await redisDBConnection.client.get(payload.userId.toString());
                 if (reply === refreshToken) {
                     return resolve(payload);
                 }
