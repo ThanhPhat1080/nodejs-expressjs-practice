@@ -15,7 +15,7 @@ import appRouters from './routers';
 
 // Helpers
 import { notFoundMiddleware, globalErrorMiddleware } from './middleware/globalError.middleware';
-import { configSwaggerUI } from './configs/swaggerConfigs';
+import { configSwaggerUI } from './configs/swagger.configs';
 
 // Config dotenv
 dotenvConfig();
