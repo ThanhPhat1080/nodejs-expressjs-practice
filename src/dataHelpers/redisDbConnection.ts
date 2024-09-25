@@ -3,7 +3,7 @@ import { createClient, RedisClientType } from 'redis';
 import { config as dotenvConfig } from 'dotenv';
 
 // Configs
-import databaseConfigs from '@/configs/databaseConfigs';
+import databaseConfigs from '@/configs/database.configs';
 
 // Config dotenv
 dotenvConfig();

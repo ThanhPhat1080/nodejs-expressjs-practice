@@ -17,11 +17,8 @@ import appRouters from './routers';
 import { notFoundMiddleware, globalErrorMiddleware } from './middleware/globalError.middleware';
 import { configSwaggerUI } from './configs/swagger.configs';
 
-// Config dotenv
-dotenvConfig();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
 
 // Connect Databases
 mongoDBConnection.connect();
@@ -44,12 +41,9 @@ app.use('/api/v1', appRouters);
 app.use(notFoundMiddleware);
 app.use(globalErrorMiddleware);
 
-app.listen(port, () => {
-    console.log('[server]: Server is running on NODE_ENV =', process.env.NODE_ENV);
-    console.log(`[server]: Server is running at PORT: ${port}`);
-});
-
 process.on('SIGINT', () => {
     mongoDBConnection.disconnect();
     redisDBConnection.client.quit();
 });
+
+export default app;

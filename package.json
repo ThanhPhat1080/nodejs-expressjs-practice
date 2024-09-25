@@ -7,7 +7,7 @@
         "dev": "nodemon",
         "build": "tsc && tsc-alias",
         "seed": "ts-node ./src/seedingDB.ts",
-        "start": "node ./dist/app.js"
+        "start": "node ./dist/server.js"
     },
     "author": "Phat.Truong",
     "license": "ISC",

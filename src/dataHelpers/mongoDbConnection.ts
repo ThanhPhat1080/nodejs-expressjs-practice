@@ -2,7 +2,7 @@
 import mongoose, { Connection } from 'mongoose';
 
 // Configs
-import databaseConfigs from '@/configs/databaseConfigs';
+import databaseConfigs from '@/configs/database.configs';
 
 export default class MongoDbConnection {
     private connectionString: string = '';
