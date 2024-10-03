@@ -17,7 +17,7 @@ export interface IUser extends Document {
     email: string;
     phoneNumber: string;
     age: number;
-    sex: string
+    sex: string;
     avatar: string;
     role: string;
 }
@@ -39,7 +39,7 @@ export const UserSchema: Schema<IUser> = new Schema(
         },
         phoneNumber: {
             type: String,
-            unique: true
+            unique: true,
         },
         age: {
             type: Number,
@@ -48,7 +48,7 @@ export const UserSchema: Schema<IUser> = new Schema(
         sex: {
             type: String,
             default: 'Nam',
-            require: true
+            require: true,
         },
         avatar: {
             type: String,

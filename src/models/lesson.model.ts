@@ -6,6 +6,12 @@ export enum LESSON_STATUS {
     PUBLISH = 'PUBLISH',
 }
 
+export interface ILessonComment extends Document {
+    user: IUser;
+    lesson: ILesson;
+    content: string;
+}
+
 export interface ILesson extends Document {
     name: string;
     videoUrl: string;
@@ -16,6 +22,25 @@ export interface ILesson extends Document {
     rightCode: string;
     length: string;
 }
+
+export const LessonCommentSchema: Schema<ILessonComment> = new mongoose.Schema({
+    user: {
+        type: Types.ObjectId,
+        required: true,
+        ref: 'user',
+    },
+    lesson: {
+        type: Types.ObjectId,
+        required: true,
+        ref: 'lesson',
+    },
+    content: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 1000,
+    },
+});
 
 export const LessonSchema: Schema<ILesson> = new Schema(
     {
@@ -57,6 +82,7 @@ export const LessonSchema: Schema<ILesson> = new Schema(
     { timestamps: true },
 );
 
-const LessonModel: Model<ILesson> = mongoose.model('lesson', LessonSchema);
+export const LessonCommentModel: Model<ILessonComment> = mongoose.model('lessonComment', LessonCommentSchema);
+export const LessonModel: Model<ILesson> = mongoose.model('lesson', LessonSchema);
 
 export default LessonModel;
