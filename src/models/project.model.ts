@@ -53,6 +53,6 @@ export const ProjectSchema: Schema<IProject> = new Schema(
     { timestamps: true },
 );
 
-const ProjectModal: Model<IProject> = mongoose.model('project', ProjectSchema);
+const ProjectModel: Model<IProject> = mongoose.model('project', ProjectSchema);
 
-export default ProjectModal;
+export default ProjectModel;
