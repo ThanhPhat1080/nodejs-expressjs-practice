@@ -94,14 +94,8 @@ const configs = {
             },
             schemas: {
                 RefreshToken: {
-                    type: 'object',
-                    required: ['refreshToken'],
-                    properties: {
-                        refreshToken: {
-                            type: 'string',
-                            description: "The user's refresh token",
-                        },
-                    },
+                    type: 'string',
+                    description: "The user's refresh token",
                 },
                 Token: {
                     type: 'object',

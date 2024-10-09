@@ -106,9 +106,7 @@
                             "type": "string",
                             "description": "The user's access token"
                         },
-                        "refreshToken": {
-                            "$ref": "#/components/schemas/RefreshToken"
-                        }
+                        "$ref": "#/components/schemas/RefreshToken"
                     }
                 },
                 "User": {

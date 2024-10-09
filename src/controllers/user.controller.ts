@@ -72,13 +72,13 @@ class UserController extends BaseController<IUser, typeof UserService> {
             const isMatchPassword = await user.checkPassword(password);
 
             if (!isMatchPassword) {
-                throw createHttpError.BadRequest('Password is not correct!');
+                throw createHttpError[500]('Password is not correct!');
             }
 
             const accessToken = await signAccessToken(user._id as string, user.role);
             const refreshToken = await signRefreshToken(user._id as string, user.role);
 
-            return res.json({ accessToken, refreshToken });
+            return res.json({ accessToken, refreshToken, user });
         } catch (error) {
             next(error);
         }

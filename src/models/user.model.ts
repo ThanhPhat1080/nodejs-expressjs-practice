@@ -89,6 +89,8 @@ UserSchema.methods.checkPassword = async function (password: string) {
     } catch (error) {
         console.log('CheckPassword ::: error ::: ', error);
     }
+
+    return false;
 };
 
 const UserModel: Model<IUser> = mongoose.model('user', UserSchema);
