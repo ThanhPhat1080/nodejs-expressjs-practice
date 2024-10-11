@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "nodemon",
         "build": "tsc && tsc-alias",
-        "seed": "ts-node ./src/seedingDB.ts",
+        "seed": "ts-node -r tsconfig-paths/register ./src/seedingDB.ts",
         "start": "node ./dist/server.js"
     },
     "author": "Phat.Truong",

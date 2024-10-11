@@ -75,8 +75,8 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 throw createHttpError[500]('Password is not correct!');
             }
 
-            const accessToken = await signAccessToken(user._id as string, user.role);
-            const refreshToken = await signRefreshToken(user._id as string, user.role);
+            const accessToken = await signAccessToken(user);
+            const refreshToken = await signRefreshToken(user._id as string);
 
             return res.json({ accessToken, refreshToken, user });
         } catch (error) {
@@ -90,9 +90,11 @@ class UserController extends BaseController<IUser, typeof UserService> {
 
             if (!refreshToken) throw createHttpError.BadRequest();
 
-            const { sub: userId, role } = await verifyRefreshToken(refreshToken);
-            const newAccessToken = await signAccessToken(userId, role);
-            const newRefreshToken = await signRefreshToken(userId, role);
+            const { sub: userId } = await verifyRefreshToken(refreshToken);
+
+            const user = await UserService.getById(userId);
+            const newAccessToken = await signAccessToken(user);
+            const newRefreshToken = await signRefreshToken(userId);
 
             res.json({
                 accessToken: newAccessToken,

@@ -51,7 +51,7 @@ const { createUser, getUsers, getById, login, refreshToken, logout } = new UserC
  *                              items:
  *                                  $ref: '#/components/schemas/User'
  */
-userRouter.get('/', getUsers);
+userRouter.get('/', verifyAccessTokenAuthentication, getUsers);
 
 /**
  * @swagger
@@ -200,3 +200,4 @@ userRouter.post('/refresh-token', refreshToken);
 userRouter.post('/logout', logout);
 
 export default userRouter;
+

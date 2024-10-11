@@ -2,16 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import JWT, { JwtPayload } from 'jsonwebtoken';
 import { redisDBConnection } from '@/dataHelpers';
-import { USER_ROLES } from '@/models/user.model';
+import { IUser, USER_ROLES } from '@/models/user.model';
 
-const signAccessToken = async (userId: string, role: string | USER_ROLES) => {
+const signAccessToken = async (user: IUser) => {
     return new Promise((resolve, reject) => {
         const payload = {
-            sub: userId,
-            role,
+            sub: user._id,
+            role: user.role || USER_ROLES.USER,
+            right: user.right
         };
         const options = {
-            expiresIn: '1m', // 1m to testing purpose
+            expiresIn: '10m', // 10m to testing purpose
         };
 
         JWT.sign(payload, process.env.ACCESS_TOKEN as string, options, (error, token) => {
@@ -22,11 +23,10 @@ const signAccessToken = async (userId: string, role: string | USER_ROLES) => {
     });
 };
 
-const signRefreshToken = async (userId: string, role: string | USER_ROLES) => {
+const signRefreshToken = async (userId: string) => {
     return new Promise((resolve, reject) => {
         const payload = {
             sub: userId,
-            role,
         };
         const options = {
             expiresIn: '7d',
