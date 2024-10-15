@@ -216,6 +216,153 @@ const configs = {
                         updatedAt: 'Mon Sep 09 2024 22:33:16',
                     },
                 },
+                Lesson: {
+                    type: 'object',
+                    required: ['name', 'videoUrl', 'description', 'status', 'creator', 'length'],
+                    properties: {
+                        name: {
+                            type: 'string',
+                            description: 'Lesson name',
+                        },
+                        videoUrl: {
+                            type: 'string',
+                            description: 'Lesson video link',
+                        },
+                        description: {
+                            type: 'string',
+                            description: 'Lesson description',
+                        },
+                        status: {
+                            type: ['string'],
+                            enum: ['DRAFT', 'PUBLISH'],
+                            description: 'Lesson status',
+                        },
+                        creator: {
+                            type: 'object',
+                            description: 'Lesson author/creator',
+                            $ref: '#/components/schemas/User',
+                        },
+                        length: {
+                            type: 'string',
+                            description: 'Lesson length and note',
+                        },
+                        metadata: {
+                            type: 'object',
+                            description: 'Lesson other metadata information'
+                        }
+                    },
+                    example: {
+                        name: 'Lesson 01',
+                        videoUrl: 'https://video-url.com',
+                        description: 'The lesson description',
+                        status: 'DRAFT',
+                        creator: 'the-user-id',
+                        length: "2-3 weeks",
+                        metadata: {
+                            key: 'value'
+                        },
+                        createdAt: 'Mon Sep 01 2024 22:33:16',
+                        updatedAt: 'Mon Sep 09 2024 22:33:16',
+                    },
+                },
+                Course: {
+                    type: 'object',
+                    required: ['name', 'description', 'length', 'level', 'status', 'rightCode', 'originalPrice'],
+                    properties: {
+                        name: {
+                            type: 'string',
+                            description: 'Course name',
+                        },
+                        description: {
+                            type: 'string',
+                            description: 'Course description',
+                        },
+                        length: {
+                            type: 'string',
+                            description: 'Course length and note',
+                        },
+                        level: {
+                            type: 'number',
+                            description: 'Course level',
+                        },
+                        status: {
+                            type: ['string'],
+                            enum: ['DRAFT', 'PUBLISH'],
+                            description: 'Course status',
+                        },
+                        lessons: {
+                            type: ['object'],
+                            $ref: '#/components/schemas/CourseLesson',
+                        },
+                        lessonCount: {
+                            type: 'number',
+                            description: 'Total lesson collection in course',
+                        },
+                        reviewCount: {
+                            type: 'number',
+                            description: 'Total reviews in course',
+                            $ref: '#/components/schemas/User',
+                        },
+                        rightCode: {
+                            type: 'string',
+                            description: 'Course right code'
+                        },
+                        originalPrice: {
+                            type: 'number',
+                            description: 'Course original price'
+                        },
+                        sale: {
+                            type: 'number',
+                            description: 'Course on sale price'
+                        },
+                        metadata: {
+                            type: 'object',
+                            description: 'Course other metadata information'
+                        }
+                    },
+                    example: {
+                        name: 'Course 01',
+                        description: 'The course description',
+                        length: "2-3 weeks",
+                        level: 1,
+                        status: 'DRAFT',
+                        lessons: [
+                            {
+                                order: 1,
+                                lesson: 'the-lesson-id',
+                                rightCode: 'C1L1'
+                            }
+                        ],
+                        lessonCount: 1,
+                        reviewCount: 1,
+                        rightCode: 'C1',
+                        originalPrice: 100,
+                        sale: 70,
+                        metadata: {
+                            key: 'value'
+                        },
+                        createdAt: 'Mon Sep 01 2024 22:33:16',
+                        updatedAt: 'Mon Sep 09 2024 22:33:16',
+                    },
+                },
+                CourseLesson: {
+                    type: 'object',
+                    description: 'Course lessons object',
+                    properties: {
+                        order: {
+                            type: 'number',
+                            description: "The lesson order",
+                        },
+                        lesson: {
+                            type: 'object',
+                            $ref: '#/components/schemas/Lesson',
+                        },
+                        rightCode: {
+                            type: 'string',
+                            description: 'The lesson in course right code'
+                        }
+                    },
+                },
             },
         },
         tags: [
@@ -227,6 +374,14 @@ const configs = {
                 name: 'Users',
                 description: 'The User managing API',
             },
+            {
+                name: 'Lessons',
+                description: 'The Lesson managing API'
+            },
+            {
+                name: 'Courses',
+                description: 'The Course managing API'
+            }
         ],
     },
     apis: ['src/routers/index.ts', 'src/routers/*.router.ts', 'src/models/*.model.ts'],

@@ -1,6 +1,5 @@
 import { refinementReqQuery } from '@/utils/common';
-import { Request } from 'express';
-import { Document, FilterQuery, Model, modelNames, PopulateOption, PopulateOptions, Query } from 'mongoose';
+import { Document, FilterQuery, Model, PopulateOptions, QueryOptions, RootFilterQuery, UpdateQuery } from 'mongoose';
 
 type GetManyReturnType<T> = {
     data: T[];
@@ -34,6 +33,13 @@ export class BaseService<T extends Document> implements IBaseService<T> {
     constructor(model: Model<T>) {
         this.model = model;
     }
+
+    findOneAndUpdate = async (filter: RootFilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>) => {
+        return await this.model.findOneAndUpdate(filter, update, {
+            new: true,
+            ...(options || {}),
+        });
+    };
 
     getById = async (id: string): Promise<T | null> => {
         return await this.model.findOne({

@@ -19,7 +19,6 @@ export interface ILesson extends Document {
     status: LESSON_STATUS;
     creator: IUser;
     metadata: object;
-    rightCode: string;
     length: string;
 }
 
@@ -67,12 +66,7 @@ export const LessonSchema: Schema<ILesson> = new Schema(
             ref: 'user',
         },
         metadata: {
-            type: Types.Map,
-        },
-        rightCode: {
-            type: String,
-            required: true,
-            unique: true,
+            type: Object,
         },
         length: {
             type: String,

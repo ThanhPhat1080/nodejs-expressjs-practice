@@ -11,6 +11,7 @@ export enum COURSE_STATUS {
 export interface ICourseLesson {
     order: number;
     lesson: ILesson;
+    rightCode: string;
 }
 
 export interface ICourseReview extends Document {
@@ -32,6 +33,7 @@ export interface ICourse extends Document {
     metadata: object;
     rightCode: string;
     originalPrice: number;
+    sale: number;
 }
 
 export const CourseLesson: Schema<ICourseLesson> = new mongoose.Schema({
@@ -46,6 +48,10 @@ export const CourseLesson: Schema<ICourseLesson> = new mongoose.Schema({
         required: true,
         ref: 'lesson',
     },
+    rightCode: {
+        type: String,
+        required: true
+    }
 });
 
 export const CourseReviewSchema: Schema<ICourseReview> = new mongoose.Schema({
@@ -112,9 +118,6 @@ export const CourseSchema: Schema<ICourse> = new Schema(
             default: 0,
             min: 0,
         },
-        metadata: {
-            type: Types.Map,
-        },
         rightCode: {
             type: String,
             required: true,
@@ -123,7 +126,12 @@ export const CourseSchema: Schema<ICourse> = new Schema(
         originalPrice: {
             type: Number,
             required: true,
-            min: 0,
+        },
+        sale: {
+            type: Number,
+        },
+        metadata: {
+            type: Object
         },
     },
     { timestamps: true },
