@@ -9,7 +9,7 @@ const signAccessToken = async (user: IUser) => {
         const payload = {
             sub: user._id,
             role: user.role || USER_ROLES.USER,
-            right: user.right
+            right: user.right,
         };
         const options = {
             expiresIn: '10m', // 10m to testing purpose

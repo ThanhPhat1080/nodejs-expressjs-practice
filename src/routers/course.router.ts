@@ -132,4 +132,3 @@ courseRouter.post('/', createCourse);
 courseRouter.put('/', updateCourse);
 
 export default courseRouter;
-

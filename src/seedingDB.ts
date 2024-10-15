@@ -63,7 +63,7 @@ const seedingUser = () => {
                 role,
                 password: hashPassword,
                 createdAt,
-                right: userRights
+                right: userRights,
             });
 
             acc.push(newUser);

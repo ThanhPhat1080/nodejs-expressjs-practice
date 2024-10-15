@@ -248,8 +248,8 @@ const configs = {
                         },
                         metadata: {
                             type: 'object',
-                            description: 'Lesson other metadata information'
-                        }
+                            description: 'Lesson other metadata information',
+                        },
                     },
                     example: {
                         name: 'Lesson 01',
@@ -257,9 +257,9 @@ const configs = {
                         description: 'The lesson description',
                         status: 'DRAFT',
                         creator: 'the-user-id',
-                        length: "2-3 weeks",
+                        length: '2-3 weeks',
                         metadata: {
-                            key: 'value'
+                            key: 'value',
                         },
                         createdAt: 'Mon Sep 01 2024 22:33:16',
                         updatedAt: 'Mon Sep 09 2024 22:33:16',
@@ -305,33 +305,33 @@ const configs = {
                         },
                         rightCode: {
                             type: 'string',
-                            description: 'Course right code'
+                            description: 'Course right code',
                         },
                         originalPrice: {
                             type: 'number',
-                            description: 'Course original price'
+                            description: 'Course original price',
                         },
                         sale: {
                             type: 'number',
-                            description: 'Course on sale price'
+                            description: 'Course on sale price',
                         },
                         metadata: {
                             type: 'object',
-                            description: 'Course other metadata information'
-                        }
+                            description: 'Course other metadata information',
+                        },
                     },
                     example: {
                         name: 'Course 01',
                         description: 'The course description',
-                        length: "2-3 weeks",
+                        length: '2-3 weeks',
                         level: 1,
                         status: 'DRAFT',
                         lessons: [
                             {
                                 order: 1,
                                 lesson: 'the-lesson-id',
-                                rightCode: 'C1L1'
-                            }
+                                rightCode: 'C1L1',
+                            },
                         ],
                         lessonCount: 1,
                         reviewCount: 1,
@@ -339,7 +339,7 @@ const configs = {
                         originalPrice: 100,
                         sale: 70,
                         metadata: {
-                            key: 'value'
+                            key: 'value',
                         },
                         createdAt: 'Mon Sep 01 2024 22:33:16',
                         updatedAt: 'Mon Sep 09 2024 22:33:16',
@@ -351,7 +351,7 @@ const configs = {
                     properties: {
                         order: {
                             type: 'number',
-                            description: "The lesson order",
+                            description: 'The lesson order',
                         },
                         lesson: {
                             type: 'object',
@@ -359,8 +359,8 @@ const configs = {
                         },
                         rightCode: {
                             type: 'string',
-                            description: 'The lesson in course right code'
-                        }
+                            description: 'The lesson in course right code',
+                        },
                     },
                 },
             },
@@ -376,12 +376,12 @@ const configs = {
             },
             {
                 name: 'Lessons',
-                description: 'The Lesson managing API'
+                description: 'The Lesson managing API',
             },
             {
                 name: 'Courses',
-                description: 'The Course managing API'
-            }
+                description: 'The Course managing API',
+            },
         ],
     },
     apis: ['src/routers/index.ts', 'src/routers/*.router.ts', 'src/models/*.model.ts'],

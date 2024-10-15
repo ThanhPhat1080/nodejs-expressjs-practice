@@ -50,8 +50,8 @@ export const CourseLesson: Schema<ICourseLesson> = new mongoose.Schema({
     },
     rightCode: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 export const CourseReviewSchema: Schema<ICourseReview> = new mongoose.Schema({
@@ -131,7 +131,7 @@ export const CourseSchema: Schema<ICourse> = new Schema(
             type: Number,
         },
         metadata: {
-            type: Object
+            type: Object,
         },
     },
     { timestamps: true },

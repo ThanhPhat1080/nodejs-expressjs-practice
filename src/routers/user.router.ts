@@ -200,4 +200,3 @@ userRouter.post('/refresh-token', refreshToken);
 userRouter.post('/logout', logout);
 
 export default userRouter;
-

@@ -78,4 +78,3 @@ class CourseController extends BaseController<ICourse, typeof CourseService> {
 }
 
 export default CourseController;
-

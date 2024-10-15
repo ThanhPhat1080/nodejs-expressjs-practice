@@ -60,8 +60,8 @@ export const UserSchema: Schema<IUser> = new Schema(
             enum: USER_ROLES,
         },
         right: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     { timestamps: true },
 );
