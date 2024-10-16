@@ -85,7 +85,7 @@ courseRouter.post('/', createCourse);
  * /course/:
  *      put:
  *          tags: [Courses]
- *          description: Update course's lessons
+ *          description: Update course
  *          security:
  *              - BearerAuth: [Admin]
  *          requestBody:
@@ -95,11 +95,7 @@ courseRouter.post('/', createCourse);
  *                          type: object
  *                          properties:
  *                              $ref: '#/components/schemas/Course'
- *                              courseId:
- *                                  type: string
- *                                  description: The course Id
  *                      example:
- *                          courseId: the-course-id
  *                          name: Course 1
  *                          description: Course first
  *                          length: anything
@@ -129,6 +125,6 @@ courseRouter.post('/', createCourse);
  *                              type: object
  *                              $ref: '#/components/schemas/Course'
  */
-courseRouter.put('/', updateCourse);
+courseRouter.post('/:id', updateCourse);
 
 export default courseRouter;

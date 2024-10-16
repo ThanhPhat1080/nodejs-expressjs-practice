@@ -61,12 +61,14 @@ class CourseController extends BaseController<ICourse, typeof CourseService> {
 
     updateCourse = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // TODO: https://github.com/typestack/class-validator
-            const { id, ...criteria } = req.body;
+            const { id } = req.params;
 
             if (!id) {
                 throw createHttpError.BadRequest();
             }
+
+            // TODO: https://github.com/typestack/class-validator
+            const criteria = req.body;
 
             const updatedCourse = await CourseService.findOneAndUpdate({ _id: id }, { ...criteria });
 

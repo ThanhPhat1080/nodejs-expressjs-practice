@@ -53,6 +53,25 @@ class LessonController extends BaseController<ILesson, typeof LessonService> {
             next(error);
         }
     };
+
+    updateLesson = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                throw createHttpError.BadRequest();
+            }
+
+            // TODO: https://github.com/typestack/class-validator
+            const criteria = req.body;
+
+            const updatedLesson = await LessonService.findOneAndUpdate({ _id: id }, { ...criteria });
+
+            return res.json(updatedLesson);
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 export default LessonController;
