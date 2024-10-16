@@ -125,11 +125,7 @@ userRouter.post('/login', login);
  *          security:
  *              - BearerAuth: []
  *          parameters:
- *              - in: path
- *                name: id
- *                required: true
- *                schema:
- *                  type: string
+ *              - $ref: '#/components/parameters/IdPath'
  *                description: The user ID
  *          responses:
  *              401:

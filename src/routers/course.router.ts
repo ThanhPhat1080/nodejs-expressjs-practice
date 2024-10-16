@@ -82,12 +82,15 @@ courseRouter.post('/', createCourse);
 
 /**
  * @swagger
- * /course/:
- *      put:
+ * /course/{id}:
+ *      post:
  *          tags: [Courses]
  *          description: Update course
  *          security:
  *              - BearerAuth: [Admin]
+ *          parameters:
+ *            - $ref: '#/components/parameters/IdPath'
+ *              description: The course ID
  *          requestBody:
  *              content:
  *                  application/json:

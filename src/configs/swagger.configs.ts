@@ -59,6 +59,14 @@ const configs = {
                 },
             },
             parameters: {
+                IdPath: {
+                    in: 'path',
+                    name: 'id',
+                    required: true,
+                    schema: {
+                        type: 'string',
+                    },
+                },
                 EmbedParam: {
                     in: 'query',
                     name: 'embed',

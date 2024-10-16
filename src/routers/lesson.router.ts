@@ -69,15 +69,17 @@ lessonRouter.get('/', getLessons);
  */
 lessonRouter.post('/', createLesson);
 
-
 /**
  * @swagger
- * /course/:
+ * /lesson/{id}:
  *      post:
  *          tags: [Lessons]
  *          description: Update lesson
  *          security:
  *              - BearerAuth: [Admin]
+ *          parameters:
+ *            - $ref: '#/components/parameters/IdPath'
+ *              description: The lesson ID
  *          requestBody:
  *              content:
  *                  application/json:
