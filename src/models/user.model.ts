@@ -64,8 +64,8 @@ export const UserSchema: Schema<IUser> = new Schema(
             type: Object,
         },
         courseRight: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     { timestamps: true },
 );

@@ -21,14 +21,16 @@ class CourseController extends BaseController<ICourse, typeof CourseService> {
                     page: Number(page),
                 },
                 embed: (embed as string).toLowerCase() === 'true',
-                populates: [{ path: 'lesson' }]
+                populates: [{ path: 'lesson' }],
             };
 
             if (user?.role === USER_ROLES.USER) {
-                return res.json(await CourseService.getUserCourses(user.courseRight, {
-                    ...option,
-                    populates: [{ path: 'lesson', select: '-videoUrl' }]
-                }));
+                return res.json(
+                    await CourseService.getUserCourses(user.courseRight, {
+                        ...option,
+                        populates: [{ path: 'lesson', select: '-videoUrl' }],
+                    }),
+                );
             }
 
             return res.json(await CourseService.getMany(criteria, option));
@@ -48,7 +50,7 @@ class CourseController extends BaseController<ICourse, typeof CourseService> {
         } catch (error) {
             next(error);
         }
-    }
+    };
 
     createCourse = async (req: Request, res: Response, next: NextFunction) => {
         try {
