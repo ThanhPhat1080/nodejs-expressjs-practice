@@ -53,7 +53,7 @@ const seedingUser = () => {
             const currentTimestamp = new Date().getTime();
             const createdAt = new Date(currentTimestamp + 60 * 60 * 1000);
 
-            const userRights = arrayToObject(['C1', 'C1_L1', 'C1_L2', 'C1_L3', 'C2_L1', 'C2_L3', 'C2_L4', 'C3_l1']);
+            const courseRight = arrayToObject(['C1', 'C1_L1', 'C1_L2', 'C1_L3', 'C2_L1', 'C2_L3', 'C2_L4', 'C3_l1']);
 
             const newUser = new UserModel({
                 name,
@@ -63,7 +63,7 @@ const seedingUser = () => {
                 role,
                 password: hashPassword,
                 createdAt,
-                right: userRights,
+                courseRight,
             });
 
             acc.push(newUser);

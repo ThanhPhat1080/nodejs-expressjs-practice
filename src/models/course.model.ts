@@ -27,7 +27,7 @@ export interface ICourse extends Document {
     length: string;
     level: number;
     status: COURSE_STATUS;
-    lessons: Array<ILesson>;
+    lessons: Array<ICourseLesson>;
     lessonCount: number;
     reviewCount: number;
     metadata: object;

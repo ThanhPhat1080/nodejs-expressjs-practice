@@ -21,6 +21,7 @@ export interface IUser extends Document {
     avatar: string;
     role: string;
     right: object;
+    courseRight: object;
 }
 
 export const UserSchema: Schema<IUser> = new Schema(
@@ -62,6 +63,9 @@ export const UserSchema: Schema<IUser> = new Schema(
         right: {
             type: Object,
         },
+        courseRight: {
+            type: Object
+        }
     },
     { timestamps: true },
 );

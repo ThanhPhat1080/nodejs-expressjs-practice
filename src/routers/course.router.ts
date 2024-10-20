@@ -7,7 +7,7 @@ const courseRouter = Router();
 
 const { getCourses, createCourse, updateCourse } = new CourseController();
 
-/** #
+/**
  * @swagger
  * /course/:
  *      get:
