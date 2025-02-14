@@ -20,8 +20,8 @@ import { configSwaggerUI } from './configs/swagger.configs';
 const app: Express = express();
 
 // Connect Databases
-mongoDBConnection.connect();
 redisDBConnection.connect();
+mongoDBConnection.connect();
 
 // Config middlewares
 app.use(

@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import CreateErrorMiddleware, { HttpError } from 'http-errors';
 
 // Helpers

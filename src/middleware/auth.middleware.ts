@@ -21,6 +21,8 @@ const verifyAccessTokenAuthentication = (req: Request, res: Response, next: Next
         const user = {
             id: payload.sub,
             role: payload.role,
+            right: payload.right,
+            courseRight: payload.courseRight
         } as Partial<IUser>;
 
         req.body = {

@@ -22,6 +22,7 @@ type GetParamOptionsType = {
 
 export interface IBaseService<T> {
     getById: (id: string) => Promise<T | null>;
+    getByTheId: (id: string) => any;
     create: (model: T) => Promise<T>;
     getOne: (criteria: FilterQuery<T>, options: GetParamOptionsType) => Promise<T | null>;
     getMany: (req: FilterQuery<T>, options: GetParamOptionsType) => Promise<GetManyReturnType<T>>;
@@ -42,9 +43,12 @@ export class BaseService<T extends Document> implements IBaseService<T> {
     };
 
     getById = async (id: string): Promise<T | null> => {
-        return await this.model.findOne({
-            _id: id,
-        });
+        return await this.model.findById(id);
+    };
+
+    getByTheId = (id: string) => {
+        const a = this.model.findById(id);
+        return a;
     };
 
     create = async (model: Partial<T>): Promise<T> => {

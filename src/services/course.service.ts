@@ -23,13 +23,13 @@ export class CourseService extends BaseService<ICourse> {
                 const lessonRightCode = lesson.rightCode;
 
                 return {
-                    ...lesson,
+                    ...lesson.toObject(),
                     hasRight: !!userCourseRight[lessonRightCode],
                 };
             });
 
             return {
-                ...course,
+                ...course.toObject(),
                 lessons: courseLessons,
                 hasRight: !!userCourseRight[courseRightCode],
             };
@@ -54,7 +54,7 @@ export class CourseService extends BaseService<ICourse> {
                 const lessonRightCode = lesson.rightCode;
 
                 return {
-                    ...lesson,
+                    ...lesson.toObject(),
                     hasRight: !!user.courseRight[lessonRightCode],
                 };
             });
@@ -67,3 +67,4 @@ export class CourseService extends BaseService<ICourse> {
 }
 
 export default new CourseService();
+

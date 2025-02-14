@@ -10,9 +10,10 @@ const signAccessToken = async (user: IUser) => {
             sub: user._id,
             role: user.role || USER_ROLES.USER,
             right: user.right,
+            courseRight: user.courseRight,
         };
         const options = {
-            expiresIn: '10m', // 10m to testing purpose
+            expiresIn: '1h', // 1h to testing purpose
         };
 
         JWT.sign(payload, process.env.ACCESS_TOKEN as string, options, (error, token) => {

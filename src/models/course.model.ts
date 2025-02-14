@@ -8,7 +8,7 @@ export enum COURSE_STATUS {
     PRE_RELEASE = 'PRE_RELEASE',
 }
 
-export interface ICourseLesson {
+export interface ICourseLesson extends Document {
     order: number;
     lesson: ILesson;
     rightCode: string;
@@ -103,11 +103,23 @@ export const CourseSchema: Schema<ICourse> = new Schema(
             enum: COURSE_STATUS,
             default: COURSE_STATUS.DRAFT,
         },
-        lessons: [
-            {
-                type: CourseLesson,
+        lessons: [{
+            order: {
+                type: Number,
+                required: true,
+                unique: true,
+                default: 0,
             },
-        ],
+            lesson: {
+                type: Types.ObjectId,
+                required: true,
+                ref: 'lesson',
+            },
+            rightCode: {
+                type: String,
+                required: true,
+            },
+        }],
         lessonCount: {
             type: Number,
             default: 0,

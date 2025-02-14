@@ -24,7 +24,7 @@
             }
         ]
     },
-    "files": ["./src/expressTypes.d.ts"],
+    "files": ["./src/expressTypes.d.ts", "./src/mongoose.d.ts"],
     "include": ["./**/*.ts"],
     "exclude": ["**/*.test.ts"]
 }

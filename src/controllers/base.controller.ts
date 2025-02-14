@@ -13,7 +13,7 @@ export class BaseController<T, S extends IBaseService<T>> {
         try {
             const { id } = req.params;
 
-            const foundElement: T | null = await this.service.getById(id);
+            const foundElement: T | null = await this.service.getByTheId(id).cache();
 
             if (!foundElement) {
                 next(createHttpError.NotFound());

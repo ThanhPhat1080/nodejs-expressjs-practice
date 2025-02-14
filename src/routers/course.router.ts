@@ -5,7 +5,7 @@ import { USER_ROLES } from '@/models/user.model';
 
 const courseRouter = Router();
 
-const { getCourses, createCourse, updateCourse } = new CourseController();
+const { getCourses, getCourseById, createCourse, updateCourse } = new CourseController();
 
 /**
  * @swagger
@@ -13,6 +13,8 @@ const { getCourses, createCourse, updateCourse } = new CourseController();
  *      get:
  *          tags: [Courses]
  *          description: Get a list items of courses
+ *          security:
+ *              - BearerAuth: [User, Admin]
  *          parameters:
  *              - in: query
  *                name: name
@@ -21,7 +23,6 @@ const { getCourses, createCourse, updateCourse } = new CourseController();
  *                description: Query by course name
  *              - $ref: '#/components/parameters/PageParam'
  *              - $ref: '#/components/parameters/LimitParam'
- *              - $ref: '#/components/parameters/EmbedParam'
  *          responses:
  *              401:
  *                  $ref: '#/components/responses/UnauthorizedError'
@@ -33,7 +34,36 @@ const { getCourses, createCourse, updateCourse } = new CourseController();
  *                              type: object
  *                              $ref: '#/components/schemas/Course'
  */
-courseRouter.get('/', getCourses);
+courseRouter.get('/',verifyAccessTokenAuthentication, getCourses);
+
+/**
+ * @swagger
+ * /course/:
+ *      get:
+ *          tags: [Courses]
+ *          description: Get a list items of courses
+ *          security:
+ *              - BearerAuth: [User, Admin]
+ *          parameters:
+ *              - in: query
+ *                name: name
+ *                schema:
+ *                    type: string
+ *                description: Query by course name
+ *              - $ref: '#/components/parameters/PageParam'
+ *              - $ref: '#/components/parameters/LimitParam'
+ *          responses:
+ *              401:
+ *                  $ref: '#/components/responses/UnauthorizedError'
+ *              200:
+ *                  description: Success
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: object
+ *                              $ref: '#/components/schemas/Course'
+ */
+courseRouter.get('/:id',verifyAccessTokenAuthentication, getCourseById);
 
 /**
  * @swagger
@@ -78,7 +108,7 @@ courseRouter.get('/', getCourses);
  *                              type: [object]
  *                              $ref: '#/components/schemas/CourseLessonCourse'
  */
-courseRouter.post('/', createCourse);
+courseRouter.post('/', verifyAccessTokenAuthentication, createCourse);
 
 /**
  * @swagger
@@ -128,6 +158,6 @@ courseRouter.post('/', createCourse);
  *                              type: object
  *                              $ref: '#/components/schemas/Course'
  */
-courseRouter.post('/:id', updateCourse);
+courseRouter.post('/:id', verifyAccessTokenAuthentication, updateCourse);
 
 export default courseRouter;

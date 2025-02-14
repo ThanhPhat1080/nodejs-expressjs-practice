@@ -14,22 +14,17 @@ class CourseController extends BaseController<ICourse, typeof CourseService> {
         try {
             const { user } = req.body;
 
-            const { limit, page, embed = 'false', ...criteria } = req.query;
+            const { limit, page, ...criteria } = req.query;
             const option = {
                 pagination: {
                     limit: Number(limit),
                     page: Number(page),
                 },
-                embed: (embed as string).toLowerCase() === 'true',
-                populates: [{ path: 'lesson' }],
             };
 
             if (user?.role === USER_ROLES.USER) {
                 return res.json(
-                    await CourseService.getUserCourses(user.courseRight, {
-                        ...option,
-                        populates: [{ path: 'lesson', select: '-videoUrl' }],
-                    }),
+                    await CourseService.getUserCourses(user.courseRight, option)
                 );
             }
 
