@@ -19,7 +19,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
                 throw createHttpError.BadRequest();
             }
 
-            const existUser = await UserService.getOne({ email }, { isExact: true });
+            const existUser = await UserService.getOne({ email }, { isExact: true }).cache();
 
             if (existUser) {
                 throw createHttpError.Conflict(`${email} is ready register!`);

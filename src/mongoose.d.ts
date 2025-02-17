@@ -4,13 +4,13 @@ declare module 'mongoose' {
         mongooseCollection: {
             name: any;
         };
-        cache(option: any): Promise<DocumentQuery<T[], Document> & QueryHelpers>;
+        // cache(option: any): Promise<DocumentQuery<T[], Document> & QueryHelpers>;
+        cache(option?: CacheOptions): Promise<DocumentQuery<T[], Document> & QueryHelpers> | Promise<T | null> | Promise<T>;
         useCache: boolean;
         hashKey: string;
     }
 
     export type CacheOptions = {
-        key?: string;
         expired?: number;
     };
 

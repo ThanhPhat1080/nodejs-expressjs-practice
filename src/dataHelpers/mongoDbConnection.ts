@@ -41,21 +41,21 @@ export default class MongoDbConnection {
 
         mongoose.Query.prototype.cache = function (options: CacheOptions = {}) {
             this.__useCache = true;
-            this.__hashKey = JSON.stringify(options.key || "");
+            this.__expired = options.expired || 60;
 
             return this; //make cache() chainable
         };
 
         mongoose.Query.prototype.exec = async function () {
             // NO-CACHE
-            if (!this.__useCache) {
+            if (this.__useCache) {
                 return await exec.apply(this, arguments);
             }
 
             const collectionName = this.mongooseCollection.name;
 
             const key = JSON.stringify(Object.assign({}, this.getQuery(), { collection: collectionName }));
-            const cacheValue = await redisClient.hGet(this.__hashKey, key);
+            const cacheValue = await redisClient.get(key);
 
             if (cacheValue) {
                 // Should return a mongoose model
@@ -69,7 +69,9 @@ export default class MongoDbConnection {
             // "result" is mongoose model
             const result = await exec.apply(this, arguments);
 
-            redisClient.hSet(this.__hashKey, key, JSON.stringify(result));
+            redisClient.set(key, JSON.stringify(result), {
+                expiration: { type: 'EX', value: this.__expired }
+            });
 
             return result;
         };

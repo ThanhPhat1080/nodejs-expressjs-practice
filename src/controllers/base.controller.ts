@@ -1,9 +1,10 @@
-import { IBaseService } from '@/services/base.service';
+import BaseService, { IBaseService } from '@/services/base.service';
 import { log } from 'console';
 import { NextFunction, Response, Request } from 'express';
 import createHttpError from 'http-errors';
+import { Document } from 'mongoose';
 
-export class BaseController<T, S extends IBaseService<T>> {
+export class BaseController<T, S extends IBaseService<Document>> {
     private service: S;
     constructor(service: S) {
         this.service = service;
@@ -13,7 +14,7 @@ export class BaseController<T, S extends IBaseService<T>> {
         try {
             const { id } = req.params;
 
-            const foundElement: T | null = await this.service.getByTheId(id).cache();
+            const foundElement: T | null = await this.service.getById(id).cache();
 
             if (!foundElement) {
                 next(createHttpError.NotFound());

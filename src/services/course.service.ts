@@ -47,7 +47,7 @@ export class CourseService extends BaseService<ICourse> {
                 _id: id,
             },
             { isExact: true, embed: true, populates: [{ path: 'lesson' }] },
-        );
+        ).cache();
 
         if (user?.role === USER_ROLES.USER) {
             const result = course.lessons.map((lesson: ICourseLesson) => {

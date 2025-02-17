@@ -1,5 +1,6 @@
+import { redisDBConnection } from '@/dataHelpers';
 import { refinementReqQuery } from '@/utils/common';
-import { Document, FilterQuery, Model, PopulateOptions, QueryOptions, RootFilterQuery, UpdateQuery } from 'mongoose';
+import { Document, FilterQuery, IfAny, Model, PopulateOptions, Query, QueryOptions, Require_id, RootFilterQuery, UpdateQuery } from 'mongoose';
 
 type GetManyReturnType<T> = {
     data: T[];
@@ -18,15 +19,22 @@ type GetParamOptionsType = {
         page?: number;
         skip?: number;
     };
+    useCache?: boolean;
+
 };
 
+type QueryType<T> = Query<IfAny<T, any, Document<unknown, {}, T> & Require_id<T>>, IfAny<T, any, Document<unknown, {}, T> & Require_id<T>>, {}, T, any, {}>
 export interface IBaseService<T> {
-    getById: (id: string) => Promise<T | null>;
-    getByTheId: (id: string) => any;
+    getById(id: string): QueryType<T>;
+    // getById: (id: string) => Promise<T | null>;
+    // getByTheId: (id: string) => any;
     create: (model: T) => Promise<T>;
-    getOne: (criteria: FilterQuery<T>, options: GetParamOptionsType) => Promise<T | null>;
-    getMany: (req: FilterQuery<T>, options: GetParamOptionsType) => Promise<GetManyReturnType<T>>;
+    // getOne: (criteria: FilterQuery<T>, options: GetParamOptionsType) => Promise<T | null>;
+    // getMany: (req: FilterQuery<T>, options: GetParamOptionsType) => Promise<GetManyReturnType<T>>;
 }
+
+const redisClient = redisDBConnection.client;
+
 
 export class BaseService<T extends Document> implements IBaseService<T> {
     private model: Model<T>;
@@ -35,20 +43,15 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         this.model = model;
     }
 
-    findOneAndUpdate = async (filter: RootFilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>) => {
-        return await this.model.findOneAndUpdate(filter, update, {
+    findOneAndUpdate = (filter: RootFilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>) => {
+        return this.model.findOneAndUpdate(filter, update, {
             new: true,
             ...(options || {}),
         });
     };
 
-    getById = async (id: string): Promise<T | null> => {
-        return await this.model.findById(id);
-    };
-
-    getByTheId = (id: string) => {
-        const a = this.model.findById(id);
-        return a;
+    getById = (id: string) => {
+        return this.model.findById(id);
     };
 
     create = async (model: Partial<T>): Promise<T> => {
@@ -71,11 +74,11 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         }
     };
 
-    getAll = async (): Promise<T[]> => {
-        return await this.model.find({});
+    getAll = () => {
+        return this.model.find({});
     };
 
-    getOne = async (criteria: FilterQuery<T>, options?: GetParamOptionsType): Promise<T | null> => {
+    getOne = (criteria: FilterQuery<T>, options?: GetParamOptionsType) => {
         const { populates = [], isExact = false, select, embed = false } = options;
 
         const queryBuilder = this.model.findOne(isExact ? criteria : refinementReqQuery(criteria)).select(select);
@@ -86,7 +89,7 @@ export class BaseService<T extends Document> implements IBaseService<T> {
             });
         }
 
-        return await queryBuilder.exec();
+        return queryBuilder;
     };
 
     getMany = async (criteria: FilterQuery<T>, options?: GetParamOptionsType): Promise<GetManyReturnType<T>> => {
@@ -96,6 +99,7 @@ export class BaseService<T extends Document> implements IBaseService<T> {
             select,
             pagination: { limit = 0, page = 0 },
             embed = false,
+            useCache = false
         } = options;
 
         let skipNumber = 0;
@@ -117,8 +121,20 @@ export class BaseService<T extends Document> implements IBaseService<T> {
                 queryBuilder.populate(populate);
             });
         }
+        let data = [];
 
-        const data = await queryBuilder.select(select).exec();
+        if (useCache) {
+            const cacheKey = JSON.stringify(Object.assign({}, queryBuilder.getQuery(), { collection: this.model.collection.name }));
+            const cacheValue = await redisDBConnection.client.get(cacheKey);
+
+            if (cacheValue) {
+                data = JSON.parse(cacheValue.toString());
+            }
+        }
+
+        if (!data || !data.length) {
+            data = await queryBuilder.select(select).cache();
+        }
 
         const total = await this.model.countDocuments(refinementQueries);
 
