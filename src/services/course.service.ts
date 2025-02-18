@@ -67,4 +67,3 @@ export class CourseService extends BaseService<ICourse> {
 }
 
 export default new CourseService();
-

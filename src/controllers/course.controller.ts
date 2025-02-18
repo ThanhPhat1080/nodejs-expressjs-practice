@@ -23,9 +23,7 @@ class CourseController extends BaseController<ICourse, typeof CourseService> {
             };
 
             if (user?.role === USER_ROLES.USER) {
-                return res.json(
-                    await CourseService.getUserCourses(user.courseRight, option)
-                );
+                return res.json(await CourseService.getUserCourses(user.courseRight, option));
             }
 
             return res.json(await CourseService.getMany(criteria, option));

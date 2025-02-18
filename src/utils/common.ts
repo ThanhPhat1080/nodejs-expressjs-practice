@@ -16,10 +16,10 @@ function refinementReqQuery<T>(query: FilterQuery<T>, isSearch: boolean = true):
 function getJsonStringify(object: Object): string {
     return JSON.stringify(object, (_, value) => {
         if (value instanceof RegExp) {
-          return value.toString();
+            return value.toString();
         }
         return value;
-      });
+    });
 }
 
 export { refinementReqQuery, getJsonStringify };

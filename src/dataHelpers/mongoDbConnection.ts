@@ -85,4 +85,3 @@ export default class MongoDbConnection {
 }
 
 export const mongoDBConnection = new MongoDbConnection(databaseConfigs.mongoDB.connectionString);
-

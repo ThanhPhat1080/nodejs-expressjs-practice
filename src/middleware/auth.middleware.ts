@@ -22,7 +22,7 @@ const verifyAccessTokenAuthentication = (req: Request, res: Response, next: Next
             id: payload.sub,
             role: payload.role,
             right: payload.right,
-            courseRight: payload.courseRight
+            courseRight: payload.courseRight,
         } as Partial<IUser>;
 
         req.body = {

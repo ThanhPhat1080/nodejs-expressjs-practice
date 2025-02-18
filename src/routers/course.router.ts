@@ -34,7 +34,7 @@ const { getCourses, getCourseById, createCourse, updateCourse } = new CourseCont
  *                              type: object
  *                              $ref: '#/components/schemas/Course'
  */
-courseRouter.get('/',verifyAccessTokenAuthentication, getCourses);
+courseRouter.get('/', verifyAccessTokenAuthentication, getCourses);
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ courseRouter.get('/',verifyAccessTokenAuthentication, getCourses);
  *                              type: object
  *                              $ref: '#/components/schemas/Course'
  */
-courseRouter.get('/:id',verifyAccessTokenAuthentication, getCourseById);
+courseRouter.get('/:id', verifyAccessTokenAuthentication, getCourseById);
 
 /**
  * @swagger

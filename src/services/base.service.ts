@@ -165,4 +165,3 @@ export class BaseService<T extends Document> implements IBaseService<T> {
 }
 
 export default BaseService;
-
