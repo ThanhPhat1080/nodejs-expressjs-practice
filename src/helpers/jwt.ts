@@ -39,7 +39,9 @@ const signRefreshToken = async (userId: string) => {
             // Set token to redisDB
             const expiresInSecond = 7 * 24 * 60 * 60;
             try {
-                await redisDBConnection.client.set(userId.toString(), token, { EX: expiresInSecond });
+                await redisDBConnection.client.set(userId.toString(), token, {
+                    EX: expiresInSecond,
+                });
 
                 resolve(token);
             } catch {

@@ -1,9 +1,12 @@
 // Libraries
-import mongoose, { CacheOptions, Connection } from 'mongoose';
+import mongoose, { CacheOptions } from 'mongoose';
 
 // Configs
 import databaseConfigs from '@/configs/database.configs';
 import { redisDBConnection } from './redisDbConnection';
+
+// Helpers
+import { getJsonStringify } from '@/utils/common';
 
 export default class MongoDbConnection {
     private connectionString: string = '';
@@ -40,6 +43,7 @@ export default class MongoDbConnection {
         const exec = mongoose.Query.prototype.exec;
 
         mongoose.Query.prototype.cache = function (options: CacheOptions = {}) {
+            console.log('runerer');
             this.__useCache = true;
             this.__expired = options.expired || 60;
 
@@ -48,13 +52,15 @@ export default class MongoDbConnection {
 
         mongoose.Query.prototype.exec = async function () {
             // NO-CACHE
-            if (this.__useCache) {
+            if (!this.__useCache) {
                 return await exec.apply(this, arguments);
             }
 
             const collectionName = this.mongooseCollection.name;
 
-            const key = JSON.stringify(Object.assign({}, this.getQuery(), { collection: collectionName }));
+            const key = getJsonStringify(
+                JSON.stringify(Object.assign({}, this.getQuery(), { collection: collectionName })),
+            );
             const cacheValue = await redisClient.get(key);
 
             if (cacheValue) {
@@ -70,7 +76,7 @@ export default class MongoDbConnection {
             const result = await exec.apply(this, arguments);
 
             redisClient.set(key, JSON.stringify(result), {
-                expiration: { type: 'EX', value: this.__expired }
+                EX: this.__expired,
             });
 
             return result;

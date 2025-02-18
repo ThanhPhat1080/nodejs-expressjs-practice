@@ -1,6 +1,17 @@
 import { redisDBConnection } from '@/dataHelpers';
-import { refinementReqQuery } from '@/utils/common';
-import { Document, FilterQuery, IfAny, Model, PopulateOptions, Query, QueryOptions, Require_id, RootFilterQuery, UpdateQuery } from 'mongoose';
+import { getJsonStringify, refinementReqQuery } from '@/utils/common';
+import {
+    Document,
+    FilterQuery,
+    IfAny,
+    Model,
+    PopulateOptions,
+    Query,
+    QueryOptions,
+    Require_id,
+    RootFilterQuery,
+    UpdateQuery,
+} from 'mongoose';
 
 type GetManyReturnType<T> = {
     data: T[];
@@ -20,21 +31,24 @@ type GetParamOptionsType = {
         skip?: number;
     };
     useCache?: boolean;
-
 };
 
-type QueryType<T> = Query<IfAny<T, any, Document<unknown, {}, T> & Require_id<T>>, IfAny<T, any, Document<unknown, {}, T> & Require_id<T>>, {}, T, any, {}>
+type QueryType<T> = Query<
+    IfAny<T, any, Document<unknown, {}, T> & Require_id<T>>,
+    IfAny<T, any, Document<unknown, {}, T> & Require_id<T>>,
+    {},
+    T,
+    any,
+    {}
+>;
+
 export interface IBaseService<T> {
     getById(id: string): QueryType<T>;
-    // getById: (id: string) => Promise<T | null>;
-    // getByTheId: (id: string) => any;
     create: (model: T) => Promise<T>;
-    // getOne: (criteria: FilterQuery<T>, options: GetParamOptionsType) => Promise<T | null>;
-    // getMany: (req: FilterQuery<T>, options: GetParamOptionsType) => Promise<GetManyReturnType<T>>;
+    getOne: (criteria: FilterQuery<T>, options: GetParamOptionsType) => QueryType<T | null>;
+    getMany: (req: FilterQuery<T>, options: GetParamOptionsType) => Promise<GetManyReturnType<T>>;
+    save: (model: T) => Promise<T>;
 }
-
-const redisClient = redisDBConnection.client;
-
 
 export class BaseService<T extends Document> implements IBaseService<T> {
     private model: Model<T>;
@@ -54,9 +68,9 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         return this.model.findById(id);
     };
 
-    create = async (model: Partial<T>): Promise<T> => {
+    create = async (modelObj: T): Promise<T> => {
         try {
-            const createdObject = await this.model.create(model);
+            const createdObject = await this.model.create(modelObj);
 
             return createdObject;
         } catch (error) {
@@ -99,7 +113,7 @@ export class BaseService<T extends Document> implements IBaseService<T> {
             select,
             pagination: { limit = 0, page = 0 },
             embed = false,
-            useCache = false
+            useCache = false,
         } = options;
 
         let skipNumber = 0;
@@ -124,7 +138,9 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         let data = [];
 
         if (useCache) {
-            const cacheKey = JSON.stringify(Object.assign({}, queryBuilder.getQuery(), { collection: this.model.collection.name }));
+            const cacheKey = getJsonStringify(
+                Object.assign({}, queryBuilder.getQuery(), { collection: this.model.collection.name }),
+            );
             const cacheValue = await redisDBConnection.client.get(cacheKey);
 
             if (cacheValue) {
@@ -133,7 +149,9 @@ export class BaseService<T extends Document> implements IBaseService<T> {
         }
 
         if (!data || !data.length) {
-            data = await queryBuilder.select(select).cache();
+            let query = () => (useCache ? queryBuilder.select(select).cache() : queryBuilder.select(select));
+
+            data = await query();
         }
 
         const total = await this.model.countDocuments(refinementQueries);
@@ -147,3 +165,4 @@ export class BaseService<T extends Document> implements IBaseService<T> {
 }
 
 export default BaseService;
+

@@ -51,6 +51,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
                     page: Number(page),
                 },
                 embed: (embed as string).toLowerCase() === 'false',
+                useCache: true,
             };
             const result = await UserService.getMany(criteria, options);
 
@@ -65,6 +66,7 @@ class UserController extends BaseController<IUser, typeof UserService> {
             const { email, password } = req.body;
 
             const user = await UserService.getOne({ email }, { isExact: true });
+
             if (!user) {
                 throw createHttpError.NotFound('User not register!');
             }
